@@ -363,7 +363,7 @@ GameObject:
   - component: {fileID: 870845946}
   - component: {fileID: 870845945}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -542,6 +542,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetCharacter: {fileID: 1777891216}
+  xOffset: 15
+  yOffset: 15
+  zOffset: 15
 --- !u!1001 &1234164702
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -675,6 +678,21 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1777891219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1777891215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 164870c1fe2f30e4598fd551c69a2e81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spellElements:
+  - {fileID: 11400000, guid: 8b8e377f22830e444add45648eec0103, type: 2}
+  - {fileID: 11400000, guid: caf40ad408242164594f78b003d4e4cd, type: 2}
 --- !u!195 &1777891221
 NavMeshAgent:
   m_ObjectHideFlags: 0

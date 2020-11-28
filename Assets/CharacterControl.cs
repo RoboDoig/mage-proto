@@ -10,6 +10,7 @@ public class CharacterControl : MonoBehaviour
     // Components cache
     private NavMeshAgent navMeshAgent;
     private Animator animator;
+    private SpellCasting spellCasting;
 
     // Speed/Movement calculation
     private Vector3 lastPosition;
@@ -21,9 +22,13 @@ public class CharacterControl : MonoBehaviour
     private float speedY;
     private float speedX;
 
+    // State variables
+    private bool inAttack = false;
+
     void Start() {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
+        spellCasting = GetComponent<SpellCasting>();
 
         lastPosition = transform.position;
         currentMoveTarget = transform.position;
@@ -50,6 +55,18 @@ public class CharacterControl : MonoBehaviour
         currentMoveTarget = position;
     }
 
+    public void Attack() {
+        if (!inAttack) {
+            animator.SetTrigger("attack");
+            inAttack = true;
+            spellCasting.StartSpell(this, currentLookTarget);
+        }
+    }
+
+    public void AttackEnd() {
+        inAttack = false;
+    }
+
     void CalculateSpeeds() {
         velocityVector = (transform.position - lastPosition) / Time.deltaTime;
         velocityMag = velocityVector.magnitude;
@@ -57,12 +74,9 @@ public class CharacterControl : MonoBehaviour
 
         speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized);
         speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized);
-
-        Debug.Log(speedX);
     }
 
     void UpdateAnimator() {
-        animator.SetFloat("moveSpeed", velocityMag);
         animator.SetFloat("speedY", speedY);
         animator.SetFloat("speedX", speedX);
     }
