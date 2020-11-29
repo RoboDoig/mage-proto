@@ -17,7 +17,7 @@ public class SpellCasting : MonoBehaviour
     void Start() {
         updateAction = DefaultUpdate;
 
-        currentSpell = spell;
+        currentSpell = Instantiate(spell);
         caster = GetComponent<CharacterControl>();
     }
 
@@ -39,6 +39,7 @@ public class SpellCasting : MonoBehaviour
         bool effectFinished = currentSpell.SpellUpdate(caster, initiateTarget, castTarget);
         if (effectFinished) {
             updateAction = DefaultUpdate;
+            currentSpell.NextElement();
         }
     }
 

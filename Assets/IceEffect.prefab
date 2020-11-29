@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7178480625375301495
+--- !u!1 &7825121757276394877
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,42 +8,44 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3295325819907842929}
-  - component: {fileID: -1940078510611369925}
+  - component: {fileID: 2490001415465897153}
+  - component: {fileID: 5669104582490592470}
   m_Layer: 0
-  m_Name: Spell
+  m_Name: IceEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3295325819907842929
+--- !u!4 &2490001415465897153
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7178480625375301495}
+  m_GameObject: {fileID: 7825121757276394877}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.034997463, y: 1.4470935, z: 5.642186}
+  m_LocalPosition: {x: 0.0806669, y: 1.9956883, z: 0.8370948}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-1940078510611369925
+--- !u!114 &5669104582490592470
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7178480625375301495}
+  m_GameObject: {fileID: 7825121757276394877}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5769f9138ed04a4b9b25d03499a6c33, type: 3}
+  m_Script: {fileID: 11500000, guid: 7faaacaf72b2843498ce51e6bf45a06b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spellEffects:
-  - {fileID: 5669104582490592470, guid: ee975a44a540e2a43a752ff921d8ffc7, type: 3}
-  - {fileID: 5669104582490592470, guid: ce25b13878cb51f48b7728d7362f81d5, type: 3}
-  currentEffect: {fileID: 0}
+  elementName: FireBlast
+  icon: {fileID: 0}
+  damage: 1
+  projectile: {fileID: 1747586400421602, guid: 27a7f93524a582440b2e162bf001be78, type: 3}
+  initiateIndicator: {fileID: 1396618616648682, guid: e57dd934961ce0e4d9f17115bb382f19, type: 3}
+  impactIndicator: {fileID: 1828717585066262, guid: 15020532ea6e8b449a74e895e1097087, type: 3}

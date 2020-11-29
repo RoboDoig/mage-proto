@@ -9,6 +9,8 @@ public class Spell : MonoBehaviour
     private int effectCounter = 0;
 
     public void Initiate(CharacterControl caster, Vector3 initiateTarget, Transform wandCastTransform) {
+        Debug.Log(spellEffects);
+        Debug.Log(effectCounter);
         spellEffects[effectCounter].OnInitiate(caster, initiateTarget, Vector3.zero, wandCastTransform);
     }
 
@@ -22,19 +24,9 @@ public class Spell : MonoBehaviour
 
     public void NextElement() {
         effectCounter++;
-        currentEffect = spellEffects[effectCounter];
-    }
-
-    public void ResetSpell() {
-        effectCounter = 0;
-        currentEffect = spellEffects[effectCounter];
-    }
-
-    public bool CanAdvance() {
-        if ((effectCounter + 1) < spellEffects.Count) {
-            return true;
-        } else {
-            return false;
+        if (effectCounter > spellEffects.Count-1) {
+            effectCounter = 0;
         }
+        currentEffect = spellEffects[effectCounter];
     }
 }
