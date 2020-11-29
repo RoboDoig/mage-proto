@@ -43,7 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7faaacaf72b2843498ce51e6bf45a06b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  elementName: FireBlast
+  effectName: Ice
   icon: {fileID: 0}
   damage: 10
   areaOfEffect: 2

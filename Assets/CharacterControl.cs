@@ -83,18 +83,6 @@ public class CharacterControl : MonoBehaviour
         inSpellCast = false;
     }
 
-    // public void Attack() {
-    //     if (!inAttack) {
-    //         animator.SetTrigger("attack");
-    //         inAttack = true;
-    //         spellCasting.StartSpell(this, currentLookTarget);
-    //     }
-    // }
-
-    // public void AttackEnd() {
-    //     inAttack = false;
-    // }
-
     void CalculateSpeeds() {
         velocityVector = (transform.position - lastPosition) / Time.deltaTime;
         velocityMag = velocityVector.magnitude;

@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spellEffects:
-  - {fileID: 5669104582490592470, guid: ee975a44a540e2a43a752ff921d8ffc7, type: 3}
   - {fileID: 5669104582490592470, guid: ce25b13878cb51f48b7728d7362f81d5, type: 3}
+  - {fileID: 5669104582490592470, guid: ee975a44a540e2a43a752ff921d8ffc7, type: 3}
+  - {fileID: -7249964621841684725, guid: 5bad8172e210ba248a2443a7d3b75504, type: 3}
   currentEffect: {fileID: 0}

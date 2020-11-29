@@ -4,35 +4,35 @@ using UnityEngine;
 
 public class SpellEffect : MonoBehaviour
 {
-    public string elementName;
+    public string effectName;
     public Sprite icon;
     public float damage;
     public float areaOfEffect;
     public GameObject projectile;
     public GameObject initiateIndicator;
     public GameObject impactIndicator;
-    private GameObject currentInitiateIndicator;
-    private GameObject currentProjectile;
-    private GameObject currentImpactIndicator;
+    protected GameObject currentInitiateIndicator;
+    protected GameObject currentProjectile;
+    protected GameObject currentImpactIndicator;
 
-    public bool OnInitiate(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
+    public virtual bool OnInitiate(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
         currentInitiateIndicator = Instantiate(initiateIndicator, wandCastTransform.position, Quaternion.identity);
         currentInitiateIndicator.transform.SetParent(wandCastTransform);
         return true;
     }
 
-    public bool OnRelease(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
+    public virtual bool OnRelease(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
         Destroy(currentInitiateIndicator);
         OnEffectStart(caster, initiateTarget, castTarget, wandCastTransform);
         return true;
     }
     
-    public bool OnEffectStart(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
+    public virtual bool OnEffectStart(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
         currentProjectile = Instantiate(projectile, wandCastTransform.position, Quaternion.identity);
         return true;
     }
 
-    public bool EffectUpdate(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
+    public virtual bool EffectUpdate(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
         currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, castTarget, 0.1f);
         if ((currentProjectile.transform.position - castTarget).magnitude < 0.1f) {
             OnEffectEnd(caster, initiateTarget, castTarget);
@@ -42,7 +42,7 @@ public class SpellEffect : MonoBehaviour
         }
     }
 
-    public bool OnEffectEnd(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
+    public virtual bool OnEffectEnd(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
         Destroy(currentProjectile);
         currentImpactIndicator = Instantiate(impactIndicator, castTarget, Quaternion.identity);
         // Deal damage
