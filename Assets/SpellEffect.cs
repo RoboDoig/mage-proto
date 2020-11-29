@@ -7,6 +7,7 @@ public class SpellEffect : MonoBehaviour
     public string elementName;
     public Sprite icon;
     public float damage;
+    public float areaOfEffect;
     public GameObject projectile;
     public GameObject initiateIndicator;
     public GameObject impactIndicator;
@@ -44,7 +45,17 @@ public class SpellEffect : MonoBehaviour
     public bool OnEffectEnd(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
         Destroy(currentProjectile);
         currentImpactIndicator = Instantiate(impactIndicator, castTarget, Quaternion.identity);
+        // Deal damage
+        Collider[] hitColliders = Physics.OverlapSphere(castTarget, areaOfEffect);
+        foreach (Collider hitCollider in hitColliders) {
+            CharacterStats stats = hitCollider.GetComponent<CharacterStats>();
+            if (stats) {
+                stats.ApplyDamage(damage);
+            }
+        }
+
         Destroy(currentImpactIndicator, 5f);
+
         return true;
     }
 }

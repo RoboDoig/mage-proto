@@ -9,8 +9,6 @@ public class Spell : MonoBehaviour
     private int effectCounter = 0;
 
     public void Initiate(CharacterControl caster, Vector3 initiateTarget, Transform wandCastTransform) {
-        Debug.Log(spellEffects);
-        Debug.Log(effectCounter);
         spellEffects[effectCounter].OnInitiate(caster, initiateTarget, Vector3.zero, wandCastTransform);
     }
 

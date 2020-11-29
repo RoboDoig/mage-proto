@@ -43,36 +43,6 @@ public class SpellCasting : MonoBehaviour
         }
     }
 
-    // public void StartSpell(CharacterControl _caster, Vector3 _target) {
-    //     updateAction = SpellUpdate;
-    //     caster = _caster;
-    //     target = _target;
-
-    //     currentSpell.currentElement.OnElementStart(caster, target);
-    //     elementTimer = 0f;
-    // }
-
-    // void SpellUpdate() {
-    //     bool spellElementFinished = currentSpell.currentElement.ElementRun(caster, target, elementTimer);
-    //     elementTimer += Time.deltaTime;
-
-    //     if (spellElementFinished) {
-    //         currentSpell.currentElement.OnElementEnd(caster, target);
-    //         if (currentSpell.CanAdvance()) {
-    //             currentSpell.NextElement();
-    //             currentSpell.currentElement.OnElementStart(caster, target);
-    //             elementTimer = 0f;
-    //         } else {
-    //             SpellEnd();
-    //         }
-    //     }
-    // }
-
-    // void SpellEnd() {
-    //     updateAction = DefaultUpdate;
-    //     currentSpell.ResetSpell();
-    // }
-
     void Update() {
         updateAction();
     }

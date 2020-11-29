@@ -45,7 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementName: FireBlast
   icon: {fileID: 0}
-  damage: 1
+  damage: 10
+  areaOfEffect: 2
   projectile: {fileID: 1747586400421602, guid: 27a7f93524a582440b2e162bf001be78, type: 3}
   initiateIndicator: {fileID: 1396618616648682, guid: e57dd934961ce0e4d9f17115bb382f19, type: 3}
   impactIndicator: {fileID: 1828717585066262, guid: 15020532ea6e8b449a74e895e1097087, type: 3}

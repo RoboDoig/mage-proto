@@ -26,7 +26,7 @@ public class CharacterControl : MonoBehaviour
     private bool inSpellCast = false;
     private bool canRelease = false;
 
-    void Start() {
+    void Awake() {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         spellCasting = GetComponent<SpellCasting>();
