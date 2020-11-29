@@ -30,7 +30,11 @@ public class PlayerInterface : MonoBehaviour
             }
 
             if (Input.GetMouseButtonDown(1)) {
-                targetCharacter.Attack();
+                targetCharacter.InitiateSpell();
+            }
+
+            if (Input.GetMouseButtonUp(1)) {
+                targetCharacter.ReleaseSpell();
             }
         }
 

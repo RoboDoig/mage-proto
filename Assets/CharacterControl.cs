@@ -23,7 +23,8 @@ public class CharacterControl : MonoBehaviour
     private float speedX;
 
     // State variables
-    private bool inAttack = false;
+    private bool inSpellCast = false;
+    private bool canRelease = false;
 
     void Start() {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -55,17 +56,44 @@ public class CharacterControl : MonoBehaviour
         currentMoveTarget = position;
     }
 
-    public void Attack() {
-        if (!inAttack) {
-            animator.SetTrigger("attack");
-            inAttack = true;
-            spellCasting.StartSpell(this, currentLookTarget);
+    public void InitiateSpell() {
+        if (!inSpellCast) {
+            animator.SetLayerWeight(1, 1f);
+            animator.SetTrigger("spellInitiate");
+            inSpellCast = true;
+            canRelease = true;
+
+            spellCasting.InitiateSpell(currentLookTarget);
         }
     }
 
-    public void AttackEnd() {
-        inAttack = false;
+    public void ReleaseSpell() {
+        if (canRelease) {
+            animator.SetTrigger("spellRelease");
+            canRelease = false;
+        }
     }
+
+    public void SpellFire() {
+        spellCasting.ReleaseSpell(currentLookTarget);
+    }
+
+    public void EndSpellRelease() {
+        animator.SetLayerWeight(1, 0f);
+        inSpellCast = false;
+    }
+
+    // public void Attack() {
+    //     if (!inAttack) {
+    //         animator.SetTrigger("attack");
+    //         inAttack = true;
+    //         spellCasting.StartSpell(this, currentLookTarget);
+    //     }
+    // }
+
+    // public void AttackEnd() {
+    //     inAttack = false;
+    // }
 
     void CalculateSpeeds() {
         velocityVector = (transform.position - lastPosition) / Time.deltaTime;

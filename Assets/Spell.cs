@@ -2,35 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spell
+public class Spell : MonoBehaviour
 {
-    public List<SpellElement> spellElements;
+    public List<SpellEffect> spellEffects;
+    public SpellEffect currentEffect;
+    private int effectCounter = 0;
 
-    public SpellElement currentElement;
-    private int elementCounter;
-
-    public Spell(List<SpellElement> _spellElements) {
-        spellElements = _spellElements;
-        elementCounter = 0;
-        currentElement = spellElements[elementCounter];
+    public void Initiate(CharacterControl caster, Vector3 initiateTarget, Transform wandCastTransform) {
+        spellEffects[effectCounter].OnInitiate(caster, initiateTarget, Vector3.zero, wandCastTransform);
     }
 
-    void Start() {
-        currentElement = spellElements[elementCounter];
+    public void Release(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget, Transform wandCastTransform) {
+        spellEffects[effectCounter].OnRelease(caster, initiateTarget, castTarget, wandCastTransform);
+    }
+
+    public bool SpellUpdate(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
+        return spellEffects[effectCounter].EffectUpdate(caster, initiateTarget, castTarget);
     }
 
     public void NextElement() {
-        elementCounter++;
-        currentElement = spellElements[elementCounter];
+        effectCounter++;
+        currentEffect = spellEffects[effectCounter];
     }
 
     public void ResetSpell() {
-        elementCounter = 0;
-        currentElement = spellElements[elementCounter];
+        effectCounter = 0;
+        currentEffect = spellEffects[effectCounter];
     }
 
     public bool CanAdvance() {
-        if ((elementCounter + 1) < spellElements.Count) {
+        if ((effectCounter + 1) < spellEffects.Count) {
             return true;
         } else {
             return false;
