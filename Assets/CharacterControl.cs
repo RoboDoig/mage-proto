@@ -41,8 +41,8 @@ public class CharacterControl : MonoBehaviour
     }
 
     public void LookAtTarget(Vector3 position) {
-        direction = (position - transform.position).normalized;
-        direction.y = transform.position.y - 0.5f;
+        Vector3 offsetPosition = new Vector3(position.x, position.y + 0.5f, position.z);
+        direction = (offsetPosition - transform.position).normalized;
 
         Quaternion lookRotation = Quaternion.LookRotation(direction);
 
