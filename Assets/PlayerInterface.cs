@@ -6,6 +6,8 @@ public class PlayerInterface : MonoBehaviour
 {
 
     public CharacterControl targetCharacter;
+    public UIManager uiManager;
+    public SpellEffectManager spellEffectManager;
 
     public float xOffset;
     public float yOffset;
@@ -14,12 +16,29 @@ public class PlayerInterface : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Camera.main.transform.position = targetCharacter.transform.position + new Vector3(xOffset, yOffset, zOffset);
+        Camera.main.transform.LookAt(targetCharacter.transform.position);
+
+        uiManager.PopulateEffectPanel(spellEffectManager.spellEffects);
+        uiManager.SelectEffect(0);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha1)) {
+            uiManager.SelectEffect(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2)) {
+            uiManager.SelectEffect(1);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3)) {
+            uiManager.SelectEffect(2);
+        }
+
+
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit)) {
