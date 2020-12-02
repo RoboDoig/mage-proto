@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class SpellCasting : MonoBehaviour
 {
-    public List<SpellEffect> spell;
-    private int currentEffect = 0;
+    private SpellEffect currentEffect;
+    private SpellEffect nextEffect;
     public Transform wandCastTransform;
     public delegate void UpdateAction();
     public UpdateAction updateAction;
@@ -13,6 +13,7 @@ public class SpellCasting : MonoBehaviour
     private Vector3 initiateTarget;
     private Vector3 castTarget;
     private float elementTimer;
+    private bool spellStarted = false;
 
     void Start() {
         updateAction = DefaultUpdate;
@@ -20,25 +21,38 @@ public class SpellCasting : MonoBehaviour
         caster = GetComponent<CharacterControl>();
     }
 
+    public void SelectSpellEffect(SpellEffect spellEffect) {
+        if (!spellStarted) {
+            currentEffect = spellEffect;
+            nextEffect = spellEffect;
+        } else {
+            nextEffect = spellEffect;
+        }
+    }
+
     public void InitiateSpell(Vector3 _initiateTarget) {
         initiateTarget = _initiateTarget;
+        spellStarted = true;
 
-        spell[currentEffect].OnInitiate(caster, initiateTarget, Vector3.zero, wandCastTransform);
+        currentEffect.OnInitiate(caster, initiateTarget, Vector3.zero, wandCastTransform);
     }
 
     public void ReleaseSpell(Vector3 _castTarget) {
         castTarget = _castTarget;
 
-        spell[currentEffect].OnRelease(caster, initiateTarget, castTarget, wandCastTransform);
+        currentEffect.OnRelease(caster, initiateTarget, castTarget, wandCastTransform);
 
         updateAction = SpellUpdate;
     }
 
     public void SpellUpdate() {
-        bool effectFinished = spell[currentEffect].EffectUpdate(caster, initiateTarget, castTarget);
+        bool effectFinished = currentEffect.EffectUpdate(caster, initiateTarget, castTarget);
         if (effectFinished) {
             updateAction = DefaultUpdate;
-            NextEffect();
+            
+            currentEffect = nextEffect;
+
+            spellStarted = false;
         }
     }
 
@@ -48,12 +62,5 @@ public class SpellCasting : MonoBehaviour
 
     void DefaultUpdate() {
 
-    }
-
-    void NextEffect() {
-        currentEffect++;
-        if (currentEffect > spell.Count-1) {
-            currentEffect = 0;
-        }
     }
 }

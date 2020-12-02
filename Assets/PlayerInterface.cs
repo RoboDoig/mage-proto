@@ -8,6 +8,7 @@ public class PlayerInterface : MonoBehaviour
     public CharacterControl targetCharacter;
     public UIManager uiManager;
     public SpellEffectManager spellEffectManager;
+    private SpellCasting characterSpellCasting;
 
     public float xOffset;
     public float yOffset;
@@ -21,21 +22,30 @@ public class PlayerInterface : MonoBehaviour
 
         uiManager.PopulateEffectPanel(spellEffectManager.spellEffects);
         uiManager.SelectEffect(0);
+
+        characterSpellCasting = targetCharacter.GetComponent<SpellCasting>();
+        characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[0]);
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) {
-            uiManager.SelectEffect(0);
+            int selectionIndex = 0;
+            uiManager.SelectEffect(selectionIndex);
+            characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2)) {
-            uiManager.SelectEffect(1);
+            int selectionIndex = 1;
+            uiManager.SelectEffect(selectionIndex);
+            characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3)) {
-            uiManager.SelectEffect(2);
+            int selectionIndex = 2;
+            uiManager.SelectEffect(selectionIndex);
+            characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
         }
 
 

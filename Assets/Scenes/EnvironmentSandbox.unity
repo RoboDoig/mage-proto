@@ -2205,6 +2205,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetCharacter: {fileID: 1777891216}
   uiManager: {fileID: 1370991106}
+  spellEffectManager: {fileID: 963194230}
   xOffset: 15
   yOffset: 20
   zOffset: 15
