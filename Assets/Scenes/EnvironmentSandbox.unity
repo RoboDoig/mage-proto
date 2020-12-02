@@ -3906,6 +3906,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8589463719009012866, guid: 1672105c99ef62a4c9fb22928de52740, type: 3}
+      propertyPath: spell.Array.data[0]
+      value: 
+      objectReference: {fileID: 5669104582490592470, guid: ce25b13878cb51f48b7728d7362f81d5, type: 3}
+    - target: {fileID: 8589463719009012866, guid: 1672105c99ef62a4c9fb22928de52740, type: 3}
+      propertyPath: spell.Array.data[1]
+      value: 
+      objectReference: {fileID: 5669104582490592470, guid: ee975a44a540e2a43a752ff921d8ffc7, type: 3}
+    - target: {fileID: 8589463719009012866, guid: 1672105c99ef62a4c9fb22928de52740, type: 3}
+      propertyPath: spell.Array.data[2]
+      value: 
+      objectReference: {fileID: -7249964621841684725, guid: 5bad8172e210ba248a2443a7d3b75504, type: 3}
     - target: {fileID: 8589771532288071569, guid: 1672105c99ef62a4c9fb22928de52740, type: 3}
       propertyPath: m_Name
       value: MagePlayer
