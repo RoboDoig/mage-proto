@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2490001415465897153}
   - component: {fileID: 5669104582490592470}
   m_Layer: 0
-  m_Name: FireEffect
+  m_Name: IceEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,10 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7faaacaf72b2843498ce51e6bf45a06b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectName: Fire
-  icon: {fileID: 0}
+  effectName: Ice
+  icon: {fileID: 21300000, guid: 4a26957329d698d49b8b7e2b07e31b27, type: 3}
   damage: 10
   areaOfEffect: 2
-  projectile: {fileID: 1722081097931586, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}
-  initiateIndicator: {fileID: 1722081097931586, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}
-  impactIndicator: {fileID: 1879769179923522, guid: 65932b7368590234d8163da03c2055d8, type: 3}
+  projectile: {fileID: 1747586400421602, guid: 27a7f93524a582440b2e162bf001be78, type: 3}
+  initiateIndicator: {fileID: 1396618616648682, guid: e57dd934961ce0e4d9f17115bb382f19, type: 3}
+  impactIndicator: {fileID: 1828717585066262, guid: 15020532ea6e8b449a74e895e1097087, type: 3}
