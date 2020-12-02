@@ -1,0 +1,13 @@
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\obj\Debug\MagePlugin.csprojAssemblyReference.cache
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\obj\Debug\MagePlugin.csproj.CoreCompileInputs.cache
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\MagePlugin.dll
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\MagePlugin.pdb
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\DarkRift.dll
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\DarkRift.Server.dll
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\DarkRift.pdb
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\DarkRift.xml
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\DarkRift.Server.pdb
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\bin\Debug\DarkRift.Server.xml
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\obj\Debug\MagePlugin.csproj.CopyComplete
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\obj\Debug\MagePlugin.dll
+C:\Users\erski\UnityProjects\mage-proto\MagePlugin\MagePlugin\obj\Debug\MagePlugin.pdb
