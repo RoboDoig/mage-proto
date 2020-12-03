@@ -36,6 +36,8 @@ namespace MagePlugin
             // Write player data and tell other connected clients about this client player
             using (DarkRiftWriter newPlayerWriter = DarkRiftWriter.Create())
             {
+                newPlayerWriter.Write(newPlayer);
+
                 using (Message newPlayerMessage = Message.Create(Tags.SpawnPlayerTag, newPlayerWriter))
                 {
                     foreach (IClient client in ClientManager.GetAllClients().Where(x => x != e.Client))

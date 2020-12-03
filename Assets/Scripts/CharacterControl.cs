@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class CharacterControl : MonoBehaviour
 {
+    public bool controllabe;
     public float rotationSpeed;
 
     // Components cache
@@ -33,6 +34,9 @@ public class CharacterControl : MonoBehaviour
 
         lastPosition = transform.position;
         currentMoveTarget = transform.position;
+
+        if (controllabe)
+            Camera.main.GetComponent<PlayerInterface>().SelectCharacter(this);
     }
 
     void Update() {
