@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using DarkRift;
+using DarkRift.Client;
+using DarkRift.Client.Unity;
 
 public class CharacterControl : MonoBehaviour
 {
     public bool controllabe;
     public float rotationSpeed;
+    public UnityClient client;
 
     // Components cache
     private NavMeshAgent navMeshAgent;
@@ -42,6 +46,17 @@ public class CharacterControl : MonoBehaviour
     void Update() {
         CalculateSpeeds();
         UpdateAnimator();
+
+        // If character is controllable, we need to update the network with movement
+        if (controllabe)
+            UpdateNetwork();
+    }
+
+    void UpdateNetwork() {
+        Message moveMessage = Message.Create(Tags.MovePlayerTag,
+            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation));
+
+        client.SendMessage(moveMessage, SendMode.Unreliable);
     }
 
     public void LookAtTarget(Vector3 position) {
@@ -58,6 +73,14 @@ public class CharacterControl : MonoBehaviour
     public void GoToTarget(Vector3 position) {
         navMeshAgent.SetDestination(position);
         currentMoveTarget = position;
+    }
+
+    public void SetRotation(Quaternion _rotation) {
+        transform.rotation = _rotation;
+    }
+
+    public void SetPosition(Vector3 _position) {
+        transform.position = _position;
     }
 
     public void InitiateSpell() {
@@ -92,8 +115,8 @@ public class CharacterControl : MonoBehaviour
         velocityMag = velocityVector.magnitude;
         lastPosition = transform.position;
 
-        speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized);
-        speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized);
+        speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized) / Time.deltaTime;
+        speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized) / Time.deltaTime;
     }
 
     void UpdateAnimator() {

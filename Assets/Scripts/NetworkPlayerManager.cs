@@ -47,6 +47,8 @@ public class NetworkPlayerManager : MonoBehaviour
                 SpawnPlayer(sender, e);
             } else if (message.Tag == Tags.DespawnPlayerTag) {
                 DespawnPlayer(sender, e);
+            } else if (message.Tag == Tags.MovePlayerTag) {
+                MovePlayer(sender, e);
             }
         }
     }
@@ -65,6 +67,7 @@ public class NetworkPlayerManager : MonoBehaviour
                 obj = Instantiate(networkPrefab, position, Quaternion.identity);
             }
 
+            obj.GetComponent<CharacterControl>().client = client;
             networkPlayers.Add(playerMessage.ID, obj.GetComponent<CharacterControl>());
         }
     }   
@@ -76,13 +79,28 @@ public class NetworkPlayerManager : MonoBehaviour
         }
     }
 
+    void MovePlayer(object sender, MessageReceivedEventArgs e) {
+        using (Message message = e.GetMessage() as Message) {
+            using (DarkRiftReader reader = message.GetReader()) {
+                ushort id = reader.ReadUInt16();
+                Vector3 newPosition = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                Quaternion newRotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+
+                if (networkPlayers.ContainsKey(id)) {
+                    networkPlayers[id].SetPosition(newPosition);
+                    networkPlayers[id].SetRotation(newRotation);
+                }
+            }
+        }
+    }
+
     void DestroyPlayer(ushort id) {
         CharacterControl p = networkPlayers[id];
         Destroy(p.gameObject);
         networkPlayers.Remove(id);
     }
 
-    class PlayerMessage : IDarkRiftSerializable {
+    public class PlayerMessage : IDarkRiftSerializable {
         public ushort ID;
         public float X {get; set;}
         public float Y {get; set;}
@@ -105,6 +123,30 @@ public class NetworkPlayerManager : MonoBehaviour
 
         public void Serialize(SerializeEvent e) {
             throw new System.NotImplementedException();
+        }
+    }
+
+    public class MovementMessage : IDarkRiftSerializable {
+        Vector3 position;
+        Quaternion rotation;
+
+        public MovementMessage(Vector3 _position, Quaternion _rotation) {
+            position = _position;
+            rotation = _rotation;
+        }
+
+        public void Deserialize(DeserializeEvent e) {
+            throw new System.NotImplementedException();
+        }
+
+        public void Serialize(SerializeEvent e) {
+            e.Writer.Write(position.x);
+            e.Writer.Write(position.y);
+            e.Writer.Write(position.z);
+            e.Writer.Write(rotation.x);
+            e.Writer.Write(rotation.y);
+            e.Writer.Write(rotation.z);
+            e.Writer.Write(rotation.w);
         }
     }   
 }

@@ -3868,7 +3868,7 @@ MonoBehaviour:
   noDelay: 0
   autoConnect: 1
   invokeFromDispatcher: 1
-  sniffData: 1
+  sniffData: 0
   objectCacheSettings:
     maxWriters: 2
     maxReaders: 2

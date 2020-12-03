@@ -56,6 +56,9 @@ namespace MagePlugin
                 Message playerMessage = Message.Create(Tags.SpawnPlayerTag, player);
                 e.Client.SendMessage(playerMessage, SendMode.Reliable);
             }
+
+            // When this client sends a message, we should also fire the movement handler
+            e.Client.MessageReceived += MovementMessageReceived;
         }
 
         void ClientDisconnected(object sender, ClientDisconnectedEventArgs e)
