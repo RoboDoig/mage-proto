@@ -43,7 +43,6 @@ public class NetworkPlayerManager : MonoBehaviour
 
     void MessageReceived(object sender, MessageReceivedEventArgs e) {
         using (Message message = e.GetMessage() as Message) {
-            Debug.Log(message.Tag);
             if (message.Tag == Tags.SpawnPlayerTag) {
                 SpawnPlayer(sender, e);
             } else if (message.Tag == Tags.DespawnPlayerTag) {
@@ -55,20 +54,18 @@ public class NetworkPlayerManager : MonoBehaviour
     void SpawnPlayer(object sender, MessageReceivedEventArgs e) {
         using (Message message = e.GetMessage()) 
         using (DarkRiftReader reader= message.GetReader()) {
-            while (reader.Position < reader.Length) {
-                ushort id = reader.ReadUInt16();
-                Vector3 position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                Quaternion rotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+            PlayerMessage playerMessage = reader.ReadSerializable<PlayerMessage>();
 
-                GameObject gameObject;
-                if (id == client.ID) {
-                    gameObject = Instantiate(controllablePrefab, position, Quaternion.identity);
-                } else {
-                    gameObject = Instantiate(networkPrefab, position, Quaternion.identity);
-                }
+            Vector3 position = new Vector3(playerMessage.X, playerMessage.Y, playerMessage.Z);
+            GameObject obj;
 
-                networkPlayers.Add(id, gameObject.GetComponent<CharacterControl>());
+            if (playerMessage.ID == client.ID) {
+                obj = Instantiate(controllablePrefab, position, Quaternion.identity);
+            } else {
+                obj = Instantiate(networkPrefab, position, Quaternion.identity);
             }
+
+            networkPlayers.Add(playerMessage.ID, obj.GetComponent<CharacterControl>());
         }
     }   
 
@@ -85,29 +82,29 @@ public class NetworkPlayerManager : MonoBehaviour
         networkPlayers.Remove(id);
     }
 
-    // class PlayerMessage : IDarkRiftSerializable {
-    //     public ushort ID;
-    //     public float X {get; set;}
-    //     public float Y {get; set;}
-    //     public float Z {get; set;}
-    //     public float rotX {get; set;}
-    //     public float rotY {get; set;}
-    //     public float rotZ {get; set;}
-    //     public float rotW {get; set;}
+    class PlayerMessage : IDarkRiftSerializable {
+        public ushort ID;
+        public float X {get; set;}
+        public float Y {get; set;}
+        public float Z {get; set;}
+        public float rotX {get; set;}
+        public float rotY {get; set;}
+        public float rotZ {get; set;}
+        public float rotW {get; set;}
 
-    //     public void Deserialize(DeserializeEvent e) {
-    //         ID = e.Reader.ReadUInt16();
-    //         X = e.Reader.ReadSingle();
-    //         Y = e.Reader.ReadSingle();
-    //         Z = e.Reader.ReadSingle();
-    //         rotX = e.Reader.ReadSingle();
-    //         rotY = e.Reader.ReadSingle();
-    //         rotZ = e.Reader.ReadSingle();
-    //         rotW = e.Reader.ReadSingle();
-    //     }
+        public void Deserialize(DeserializeEvent e) {
+            ID = e.Reader.ReadUInt16();
+            X = e.Reader.ReadSingle();
+            Y = e.Reader.ReadSingle();
+            Z = e.Reader.ReadSingle();
+            rotX = e.Reader.ReadSingle();
+            rotY = e.Reader.ReadSingle();
+            rotZ = e.Reader.ReadSingle();
+            rotW = e.Reader.ReadSingle();
+        }
 
-    //     public void Serialize(SerializeEvent e) {
-    //         throw new System.NotImplementedException();
-    //     }
-    // }   
+        public void Serialize(SerializeEvent e) {
+            throw new System.NotImplementedException();
+        }
+    }   
 }
