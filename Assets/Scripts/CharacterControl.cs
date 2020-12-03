@@ -81,6 +81,7 @@ public class CharacterControl : MonoBehaviour
 
     public void SetPosition(Vector3 _position) {
         transform.position = _position;
+        lastPosition = _position;
     }
 
     public void InitiateSpell() {
@@ -115,8 +116,12 @@ public class CharacterControl : MonoBehaviour
         velocityMag = velocityVector.magnitude;
         lastPosition = transform.position;
 
-        speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized) / Time.deltaTime;
-        speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized) / Time.deltaTime;
+        speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized);
+        speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized);
+
+        if (velocityMag > 0.1f) {
+            Debug.Log(speedY);
+        }
     }
 
     void UpdateAnimator() {
