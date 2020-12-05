@@ -26,6 +26,10 @@ public class PlayerInterface : MonoBehaviour
         characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[0]);
     }
 
+    void Start() {
+        Screen.SetResolution(1920, 1080, 0);
+    }
+
     // Update is called once per frame
     void Update()
     {
