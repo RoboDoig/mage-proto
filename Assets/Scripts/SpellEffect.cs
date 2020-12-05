@@ -50,7 +50,7 @@ public class SpellEffect : MonoBehaviour
         foreach (Collider hitCollider in hitColliders) {
             CharacterStats stats = hitCollider.GetComponent<CharacterStats>();
             if (stats) {
-                stats.ApplyDamage(damage);
+                stats.ApplyEffect("health", damage);
             }
         }
 
