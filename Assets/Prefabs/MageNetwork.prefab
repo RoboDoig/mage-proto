@@ -452,13 +452,13 @@ GameObject:
   - component: {fileID: 8591864366954234895}
   - component: {fileID: 8530182567873101969}
   - component: {fileID: 8589463719009012867}
-  - component: {fileID: 8589463719009012865}
   - component: {fileID: 8589463719009012866}
   - component: {fileID: 8589463719009012868}
   - component: {fileID: 8589463719009012871}
   - component: {fileID: 8589463719009012870}
+  - component: {fileID: 3512619044212810740}
   m_Layer: 0
-  m_Name: MagePlayer
+  m_Name: MageNetwork
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -534,20 +534,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &8589463719009012865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8589771532288071569}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58855a7d4e9064a438edc8f71c6c386f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controllabe: 1
-  rotationSpeed: 6
 --- !u!114 &8589463719009012866
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -613,6 +599,18 @@ MonoBehaviour:
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []
+--- !u!114 &3512619044212810740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8589771532288071569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0b9537105c9d341807e4985d64971b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8589775278487683453
 GameObject:
   m_ObjectHideFlags: 0

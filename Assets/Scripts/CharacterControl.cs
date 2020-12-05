@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using DarkRift;
+using DarkRift.Client;
+using DarkRift.Client.Unity;
 
 public class CharacterControl : MonoBehaviour
 {
+    public bool controllabe;
     public float rotationSpeed;
+    public UnityClient client;
 
     // Components cache
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private SpellCasting spellCasting;
+    private SpellEffectManager spellEffectManager;
 
     // Speed/Movement calculation
     private Vector3 lastPosition;
@@ -19,8 +25,7 @@ public class CharacterControl : MonoBehaviour
     private float velocityMag;
     private Vector3 direction;
     private Vector3 velocityVector;
-    private float speedY;
-    private float speedX;
+    private Vector2 animSpeed = Vector2.zero;
 
     // State variables
     private bool inSpellCast = false;
@@ -30,14 +35,29 @@ public class CharacterControl : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         spellCasting = GetComponent<SpellCasting>();
+        spellEffectManager = Camera.main.GetComponent<SpellEffectManager>();
+        spellCasting.SelectSpellEffect(spellEffectManager.spellEffects[0]);
 
         lastPosition = transform.position;
         currentMoveTarget = transform.position;
+
+        if (controllabe)
+            Camera.main.GetComponent<PlayerInterface>().SelectCharacter(this);
     }
 
     void Update() {
-        CalculateSpeeds();
-        UpdateAnimator();
+        // If character is controllable, we need to update the network with movement
+        if (controllabe)
+            CalculateSpeeds();
+            UpdateAnimator();
+            UpdateNetwork();
+    }
+
+    void UpdateNetwork() {
+        Message moveMessage = Message.Create(Tags.MovePlayerTag,
+            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation, currentLookTarget, animSpeed));
+
+        client.SendMessage(moveMessage, SendMode.Unreliable);
     }
 
     public void LookAtTarget(Vector3 position) {
@@ -64,6 +84,11 @@ public class CharacterControl : MonoBehaviour
             canRelease = true;
 
             spellCasting.InitiateSpell(currentLookTarget);
+
+            Message spellMessage = Message.Create(Tags.SpellPlayerTag,
+                new NetworkPlayerManager.SpellMessage(spellCasting.currentEffect.effectName, "spellInitiate"));
+
+            client.SendMessage(spellMessage, SendMode.Reliable);
         }
     }
 
@@ -71,6 +96,11 @@ public class CharacterControl : MonoBehaviour
         if (canRelease) {
             animator.SetTrigger("spellRelease");
             canRelease = false;
+
+            Message spellMessage = Message.Create(Tags.SpellPlayerTag,
+                new NetworkPlayerManager.SpellMessage(spellCasting.currentEffect.effectName, "spellRelease"));
+
+            client.SendMessage(spellMessage, SendMode.Reliable);
         }
     }
 
@@ -88,12 +118,12 @@ public class CharacterControl : MonoBehaviour
         velocityMag = velocityVector.magnitude;
         lastPosition = transform.position;
 
-        speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized);
-        speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized);
+        animSpeed.y = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized);
+        animSpeed.x = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized);
     }
 
     void UpdateAnimator() {
-        animator.SetFloat("speedY", speedY);
-        animator.SetFloat("speedX", speedX);
+        animator.SetFloat("speedY", animSpeed.y);
+        animator.SetFloat("speedX", animSpeed.x);
     }
 }

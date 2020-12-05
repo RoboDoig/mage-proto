@@ -33,7 +33,7 @@ public class SpellEffect : MonoBehaviour
     }
 
     public virtual bool EffectUpdate(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
-        currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, castTarget, 0.1f);
+        currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, castTarget, 20f * Time.deltaTime);
         if ((currentProjectile.transform.position - castTarget).magnitude < 0.1f) {
             OnEffectEnd(caster, initiateTarget, castTarget);
             return true;
