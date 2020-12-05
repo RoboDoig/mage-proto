@@ -23,7 +23,6 @@ public class PlayerInterface : MonoBehaviour
         uiManager.SelectEffect(0);
 
         characterSpellCasting = targetCharacter.GetComponent<SpellCasting>();
-        characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[0]);
     }
 
     void Start() {

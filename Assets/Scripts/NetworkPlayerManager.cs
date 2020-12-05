@@ -49,6 +49,8 @@ public class NetworkPlayerManager : MonoBehaviour
                 DespawnPlayer(sender, e);
             } else if (message.Tag == Tags.MovePlayerTag) {
                 MovePlayer(sender, e);
+            } else if (message.Tag == Tags.SpellPlayerTag) {
+                PlayerSpell(sender, e);
             }
         }
     }
@@ -92,6 +94,24 @@ public class NetworkPlayerManager : MonoBehaviour
                     networkPlayers[id].SetRotation(newRotation);
                     networkPlayers[id].SetLookTarget(newLookTarget);
                     networkPlayers[id].SetAnimatorSpeeds(newAnimSpeeds);
+                }
+            }
+        }
+    }
+
+    void PlayerSpell(object sender, MessageReceivedEventArgs e) {
+        using (Message message= e.GetMessage() as Message) {
+            using (DarkRiftReader reader = message.GetReader()) {
+                ushort id = reader.ReadUInt16();
+                string spellName = reader.ReadString();
+                string command = reader.ReadString();
+
+                if (networkPlayers.ContainsKey(id)) {
+                    if (command == "spellInitiate") {
+                        networkPlayers[id].InitiateSpell(spellName);
+                    } else if (command == "spellRelease") {
+                        networkPlayers[id].ReleaseSpell();
+                    }
                 }
             }
         }
@@ -165,6 +185,25 @@ public class NetworkPlayerManager : MonoBehaviour
             e.Writer.Write(lookTarget.z);
             e.Writer.Write(animSpeeds.x);
             e.Writer.Write(animSpeeds.y);
+        }
+    }
+
+    public class SpellMessage : IDarkRiftSerializable {
+        string spellName;
+        string command;
+
+        public SpellMessage(string _spellName, string _command) {
+            spellName = _spellName;
+            command = _command;
+        }
+
+        public void Deserialize(DeserializeEvent e) {
+            throw new System.NotImplementedException();
+        }
+
+        public void Serialize(SerializeEvent e) {
+            e.Writer.Write(spellName);
+            e.Writer.Write(command);
         }
     }
 }

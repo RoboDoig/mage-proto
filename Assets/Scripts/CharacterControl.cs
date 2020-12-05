@@ -16,6 +16,7 @@ public class CharacterControl : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private SpellCasting spellCasting;
+    private SpellEffectManager spellEffectManager;
 
     // Speed/Movement calculation
     private Vector3 lastPosition;
@@ -34,6 +35,8 @@ public class CharacterControl : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         spellCasting = GetComponent<SpellCasting>();
+        spellEffectManager = Camera.main.GetComponent<SpellEffectManager>();
+        spellCasting.SelectSpellEffect(spellEffectManager.spellEffects[0]);
 
         lastPosition = transform.position;
         currentMoveTarget = transform.position;
@@ -81,6 +84,11 @@ public class CharacterControl : MonoBehaviour
             canRelease = true;
 
             spellCasting.InitiateSpell(currentLookTarget);
+
+            Message spellMessage = Message.Create(Tags.SpellPlayerTag,
+                new NetworkPlayerManager.SpellMessage(spellCasting.currentEffect.effectName, "spellInitiate"));
+
+            client.SendMessage(spellMessage, SendMode.Reliable);
         }
     }
 
@@ -88,6 +96,11 @@ public class CharacterControl : MonoBehaviour
         if (canRelease) {
             animator.SetTrigger("spellRelease");
             canRelease = false;
+
+            Message spellMessage = Message.Create(Tags.SpellPlayerTag,
+                new NetworkPlayerManager.SpellMessage(spellCasting.currentEffect.effectName, "spellRelease"));
+
+            client.SendMessage(spellMessage, SendMode.Reliable);
         }
     }
 

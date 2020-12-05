@@ -59,6 +59,7 @@ namespace MagePlugin
 
             // When this client sends a message, we should also fire the movement handler
             e.Client.MessageReceived += MovementMessageReceived;
+            e.Client.MessageReceived += SpellMessageReceived;
         }
 
         void ClientDisconnected(object sender, ClientDisconnectedEventArgs e)
@@ -74,6 +75,32 @@ namespace MagePlugin
                     foreach (IClient client in ClientManager.GetAllClients())
                     {
                         client.SendMessage(message, SendMode.Reliable);
+                    }
+                }
+            }
+        }
+
+        void SpellMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            using (Message message = e.GetMessage() as Message)
+            {
+                if (message.Tag == Tags.SpellPlayerTag)
+                {
+                    using (DarkRiftReader reader = message.GetReader())
+                    {
+                        string spellName = reader.ReadString();
+                        string command = reader.ReadString();
+                        
+                        using (DarkRiftWriter writer = DarkRiftWriter.Create())
+                        {
+                            writer.Write(e.Client.ID);
+                            writer.Write(spellName);
+                            writer.Write(command);
+                            message.Serialize(writer);
+                        }
+
+                        foreach (IClient c in ClientManager.GetAllClients().Where(x => x != e.Client))
+                            c.SendMessage(message, SendMode.Reliable);
                     }
                 }
             }

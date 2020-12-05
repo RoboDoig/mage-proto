@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpellCasting : MonoBehaviour
 {
-    private SpellEffect currentEffect;
+    public SpellEffect currentEffect {get; private set;}
     private SpellEffect nextEffect;
     public Transform wandCastTransform;
     public delegate void UpdateAction();
