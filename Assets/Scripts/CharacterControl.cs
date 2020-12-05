@@ -45,11 +45,10 @@ public class CharacterControl : MonoBehaviour
     }
 
     void Update() {
-        UpdateAnimator();
-        CalculateSpeeds();
-
         // If character is controllable, we need to update the network with movement
         if (controllabe)
+            CalculateSpeeds();
+            UpdateAnimator();
             UpdateNetwork();
     }
 
@@ -74,23 +73,6 @@ public class CharacterControl : MonoBehaviour
     public void GoToTarget(Vector3 position) {
         navMeshAgent.SetDestination(position);
         currentMoveTarget = position;
-    }
-
-    public void SetRotation(Quaternion _rotation) {
-        transform.rotation = _rotation;
-    }
-
-    public void SetLookTarget(Vector3 _target) {
-        currentLookTarget = _target;
-    }
-
-    public void SetPosition(Vector3 _position) {
-        transform.position = _position;
-    }
-
-    public void SetAnimatorSpeeds(Vector2 _animSpeed) {
-        animSpeed.x = _animSpeed.x;
-        animSpeed.y = _animSpeed.y;
     }
 
     public void InitiateSpell() {

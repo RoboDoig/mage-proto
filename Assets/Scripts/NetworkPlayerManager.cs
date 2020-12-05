@@ -20,7 +20,7 @@ public class NetworkPlayerManager : MonoBehaviour
     [Tooltip("The network controllable player prefab")]
     GameObject networkPrefab;
 
-    Dictionary<ushort, CharacterControl> networkPlayers = new Dictionary<ushort, CharacterControl>();
+    Dictionary<ushort, NetworkCharacterControl> networkPlayers = new Dictionary<ushort, NetworkCharacterControl>();
 
     void Awake() {
         if (client == null) {
@@ -63,12 +63,11 @@ public class NetworkPlayerManager : MonoBehaviour
 
             if (playerMessage.ID == client.ID) {
                 obj = Instantiate(controllablePrefab, position, Quaternion.identity);
+                obj.GetComponent<CharacterControl>().client = client;
             } else {
                 obj = Instantiate(networkPrefab, position, Quaternion.identity);
+                networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkCharacterControl>());
             }
-
-            obj.GetComponent<CharacterControl>().client = client;
-            networkPlayers.Add(playerMessage.ID, obj.GetComponent<CharacterControl>());
         }
     }   
 
@@ -97,7 +96,7 @@ public class NetworkPlayerManager : MonoBehaviour
     }
 
     void DestroyPlayer(ushort id) {
-        CharacterControl p = networkPlayers[id];
+        NetworkCharacterControl p = networkPlayers[id];
         Destroy(p.gameObject);
         networkPlayers.Remove(id);
     }
@@ -160,6 +159,23 @@ public class NetworkPlayerManager : MonoBehaviour
             e.Writer.Write(lookTarget.x);
             e.Writer.Write(lookTarget.y);
             e.Writer.Write(lookTarget.z);
+        }
+    }
+
+    public class AnimationMessage : IDarkRiftSerializable {
+        Vector2 animSpeeds;
+
+        public AnimationMessage(Vector2 _animSpeeds) {
+            animSpeeds = _animSpeeds;
+        }
+
+        public void Deserialize(DeserializeEvent e) {
+            throw new System.NotImplementedException();
+        }
+
+        public void Serialize(SerializeEvent e) {
+            e.Writer.Write(animSpeeds.x);
+            e.Writer.Write(animSpeeds.y);
         }
     }   
 }
