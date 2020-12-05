@@ -65,7 +65,8 @@ public class NetworkPlayerManager : MonoBehaviour
 
             if (playerMessage.ID == client.ID) {
                 obj = Instantiate(controllablePrefab, position, Quaternion.identity);
-                obj.GetComponent<CharacterControl>().client = client;
+                obj.GetComponent<CharacterControl>().client = client; // TODO replace with network messenger
+                obj.GetComponent<NetworkMessenger>().client = client;
             } else {
                 obj = Instantiate(networkPrefab, position, Quaternion.identity);
                 networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkCharacterControl>());
