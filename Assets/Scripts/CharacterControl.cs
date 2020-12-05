@@ -10,7 +10,6 @@ public class CharacterControl : MonoBehaviour
 {
     public bool controllabe;
     public float rotationSpeed;
-    public UnityClient client;
 
     // Components cache
     private NavMeshAgent navMeshAgent;
