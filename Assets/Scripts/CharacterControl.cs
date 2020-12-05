@@ -25,8 +25,6 @@ public class CharacterControl : MonoBehaviour
     private Vector3 direction;
     private Vector3 velocityVector;
     private Vector2 animSpeed = Vector2.zero;
-    // private float speedY;
-    // private float speedX;
 
     // State variables
     private bool inSpellCast = false;

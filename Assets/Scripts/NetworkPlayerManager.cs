@@ -161,21 +161,4 @@ public class NetworkPlayerManager : MonoBehaviour
             e.Writer.Write(lookTarget.z);
         }
     }
-
-    public class AnimationMessage : IDarkRiftSerializable {
-        Vector2 animSpeeds;
-
-        public AnimationMessage(Vector2 _animSpeeds) {
-            animSpeeds = _animSpeeds;
-        }
-
-        public void Deserialize(DeserializeEvent e) {
-            throw new System.NotImplementedException();
-        }
-
-        public void Serialize(SerializeEvent e) {
-            e.Writer.Write(animSpeeds.x);
-            e.Writer.Write(animSpeeds.y);
-        }
-    }   
 }
