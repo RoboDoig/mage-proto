@@ -97,6 +97,10 @@ namespace MagePlugin
                         float rotZ = reader.ReadSingle();
                         float rotW = reader.ReadSingle();
 
+                        float lookX = reader.ReadSingle();
+                        float lookY = reader.ReadSingle();
+                        float lookZ = reader.ReadSingle();
+
                         // update specified player with this information
                         Player player = players[e.Client];
 
@@ -109,6 +113,10 @@ namespace MagePlugin
                         player.rotZ = rotZ;
                         player.rotW = rotW;
 
+                        player.lookX = lookX;
+                        player.lookY = lookY;
+                        player.lookZ = lookZ;
+
                         // send this player's updated position back to all clients except the client that sent the message
                         using (DarkRiftWriter writer = DarkRiftWriter.Create())
                         {
@@ -120,6 +128,9 @@ namespace MagePlugin
                             writer.Write(player.rotY);
                             writer.Write(player.rotZ);
                             writer.Write(player.rotW);
+                            writer.Write(player.lookX);
+                            writer.Write(player.lookY);
+                            writer.Write(player.lookZ);
 
                             message.Serialize(writer);
                         }

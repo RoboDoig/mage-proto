@@ -85,10 +85,12 @@ public class NetworkPlayerManager : MonoBehaviour
                 ushort id = reader.ReadUInt16();
                 Vector3 newPosition = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                 Quaternion newRotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                Vector3 newLookTarget = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
 
                 if (networkPlayers.ContainsKey(id)) {
                     networkPlayers[id].SetPosition(newPosition);
                     networkPlayers[id].SetRotation(newRotation);
+                    networkPlayers[id].SetLookTarget(newLookTarget);
                 }
             }
         }
@@ -109,6 +111,9 @@ public class NetworkPlayerManager : MonoBehaviour
         public float rotY {get; set;}
         public float rotZ {get; set;}
         public float rotW {get; set;}
+        public float lookX {get; set;}
+        public float lookY {get; set;}
+        public float lookZ {get; set;}
 
         public void Deserialize(DeserializeEvent e) {
             ID = e.Reader.ReadUInt16();
@@ -119,6 +124,9 @@ public class NetworkPlayerManager : MonoBehaviour
             rotY = e.Reader.ReadSingle();
             rotZ = e.Reader.ReadSingle();
             rotW = e.Reader.ReadSingle();
+            lookX = e.Reader.ReadSingle();
+            lookY = e.Reader.ReadSingle();
+            lookZ = e.Reader.ReadSingle();
         }
 
         public void Serialize(SerializeEvent e) {
@@ -129,10 +137,12 @@ public class NetworkPlayerManager : MonoBehaviour
     public class MovementMessage : IDarkRiftSerializable {
         Vector3 position;
         Quaternion rotation;
+        Vector3 lookTarget;
 
-        public MovementMessage(Vector3 _position, Quaternion _rotation) {
+        public MovementMessage(Vector3 _position, Quaternion _rotation, Vector3 _lookTarget) {
             position = _position;
             rotation = _rotation;
+            lookTarget = _lookTarget;
         }
 
         public void Deserialize(DeserializeEvent e) {
@@ -147,6 +157,9 @@ public class NetworkPlayerManager : MonoBehaviour
             e.Writer.Write(rotation.y);
             e.Writer.Write(rotation.z);
             e.Writer.Write(rotation.w);
+            e.Writer.Write(lookTarget.x);
+            e.Writer.Write(lookTarget.y);
+            e.Writer.Write(lookTarget.z);
         }
     }   
 }

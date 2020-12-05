@@ -24,8 +24,9 @@ public class CharacterControl : MonoBehaviour
     private float velocityMag;
     private Vector3 direction;
     private Vector3 velocityVector;
-    private float speedY;
-    private float speedX;
+    private Vector2 animSpeed = Vector2.zero;
+    // private float speedY;
+    // private float speedX;
 
     // State variables
     private bool inSpellCast = false;
@@ -44,8 +45,8 @@ public class CharacterControl : MonoBehaviour
     }
 
     void Update() {
-        CalculateSpeeds();
         UpdateAnimator();
+        CalculateSpeeds();
 
         // If character is controllable, we need to update the network with movement
         if (controllabe)
@@ -54,7 +55,7 @@ public class CharacterControl : MonoBehaviour
 
     void UpdateNetwork() {
         Message moveMessage = Message.Create(Tags.MovePlayerTag,
-            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation));
+            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation, currentLookTarget));
 
         client.SendMessage(moveMessage, SendMode.Unreliable);
     }
@@ -79,8 +80,17 @@ public class CharacterControl : MonoBehaviour
         transform.rotation = _rotation;
     }
 
+    public void SetLookTarget(Vector3 _target) {
+        currentLookTarget = _target;
+    }
+
     public void SetPosition(Vector3 _position) {
         transform.position = _position;
+    }
+
+    public void SetAnimatorSpeeds(Vector2 _animSpeed) {
+        animSpeed.x = _animSpeed.x;
+        animSpeed.y = _animSpeed.y;
     }
 
     public void InitiateSpell() {
@@ -115,12 +125,12 @@ public class CharacterControl : MonoBehaviour
         velocityMag = velocityVector.magnitude;
         lastPosition = transform.position;
 
-        speedY = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized) / Time.deltaTime;
-        speedX = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized) / Time.deltaTime;
+        animSpeed.y = Vector3.Dot(velocityVector, (currentLookTarget - transform.position).normalized);
+        animSpeed.x = Vector3.Dot(velocityVector, Quaternion.Euler(0, 90, 0) * (currentLookTarget - transform.position).normalized);
     }
 
     void UpdateAnimator() {
-        animator.SetFloat("speedY", speedY);
-        animator.SetFloat("speedX", speedX);
+        animator.SetFloat("speedY", animSpeed.y);
+        animator.SetFloat("speedX", animSpeed.x);
     }
 }
