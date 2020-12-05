@@ -52,7 +52,7 @@ public class CharacterControl : MonoBehaviour
 
     void UpdateNetwork() {
         Message moveMessage = Message.Create(Tags.MovePlayerTag,
-            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation, currentLookTarget));
+            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation, currentLookTarget, animSpeed));
 
         client.SendMessage(moveMessage, SendMode.Unreliable);
     }

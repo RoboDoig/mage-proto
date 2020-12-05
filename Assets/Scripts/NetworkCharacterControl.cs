@@ -9,6 +9,11 @@ public class NetworkCharacterControl : MonoBehaviour
     private Vector3 currentLookTarget;
     private Vector2 animSpeed;
 
+    void Awake() {
+        animator = GetComponent<Animator>();
+        spellCasting = GetComponent<SpellCasting>();
+    }
+
     public void SetRotation(Quaternion _rotation) {
         transform.rotation = _rotation;
     }
@@ -22,7 +27,7 @@ public class NetworkCharacterControl : MonoBehaviour
     }
 
     public void SetAnimatorSpeeds(Vector2 _animSpeed) {
-        animSpeed.x = _animSpeed.x;
-        animSpeed.y = _animSpeed.y;
+        animator.SetFloat("speedX", _animSpeed.x);
+        animator.SetFloat("speedY", _animSpeed.y);
     }
 }

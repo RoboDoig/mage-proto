@@ -101,6 +101,9 @@ namespace MagePlugin
                         float lookY = reader.ReadSingle();
                         float lookZ = reader.ReadSingle();
 
+                        float animSpeedX = reader.ReadSingle();
+                        float animSpeedY = reader.ReadSingle();
+
                         // update specified player with this information
                         Player player = players[e.Client];
 
@@ -131,6 +134,9 @@ namespace MagePlugin
                             writer.Write(player.lookX);
                             writer.Write(player.lookY);
                             writer.Write(player.lookZ);
+
+                            writer.Write(animSpeedX);
+                            writer.Write(animSpeedY);
 
                             message.Serialize(writer);
                         }

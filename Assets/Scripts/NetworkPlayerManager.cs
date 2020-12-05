@@ -85,11 +85,13 @@ public class NetworkPlayerManager : MonoBehaviour
                 Vector3 newPosition = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                 Quaternion newRotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                 Vector3 newLookTarget = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                Vector2 newAnimSpeeds = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
                 if (networkPlayers.ContainsKey(id)) {
                     networkPlayers[id].SetPosition(newPosition);
                     networkPlayers[id].SetRotation(newRotation);
                     networkPlayers[id].SetLookTarget(newLookTarget);
+                    networkPlayers[id].SetAnimatorSpeeds(newAnimSpeeds);
                 }
             }
         }
@@ -137,11 +139,13 @@ public class NetworkPlayerManager : MonoBehaviour
         Vector3 position;
         Quaternion rotation;
         Vector3 lookTarget;
+        Vector2 animSpeeds;
 
-        public MovementMessage(Vector3 _position, Quaternion _rotation, Vector3 _lookTarget) {
+        public MovementMessage(Vector3 _position, Quaternion _rotation, Vector3 _lookTarget, Vector2 _animSpeeds) {
             position = _position;
             rotation = _rotation;
             lookTarget = _lookTarget;
+            animSpeeds = _animSpeeds;
         }
 
         public void Deserialize(DeserializeEvent e) {
@@ -159,6 +163,8 @@ public class NetworkPlayerManager : MonoBehaviour
             e.Writer.Write(lookTarget.x);
             e.Writer.Write(lookTarget.y);
             e.Writer.Write(lookTarget.z);
+            e.Writer.Write(animSpeeds.x);
+            e.Writer.Write(animSpeeds.y);
         }
     }
 }
