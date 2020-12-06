@@ -25,6 +25,8 @@ namespace MagePlugin
         public float lookY { get; set; }
         public float lookZ { get; set; }
 
+        public Dictionary<string, float> stats;
+
         public Player(ushort id, float x, float y, float z)
         {
             ID = id;
@@ -40,6 +42,10 @@ namespace MagePlugin
             lookX = 0f;
             lookY = 0f;
             lookZ = 0f;
+
+            stats = new Dictionary<string, float>();
+            stats.Add("health", 100f);
+            stats.Add("mana", 100f);
         }
 
         public void Deserialize(DeserializeEvent e)
@@ -76,6 +82,12 @@ namespace MagePlugin
             e.Writer.Write(lookX);
             e.Writer.Write(lookY);
             e.Writer.Write(lookZ);
+
+            foreach (KeyValuePair<string, float> stat in stats)
+            {
+                e.Writer.Write(stat.Key);
+                e.Writer.Write(stat.Value);
+            }
         }
     }
 }

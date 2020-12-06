@@ -4,33 +4,18 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    private Dictionary<string, float> stats = new Dictionary<string, float>();
+    private Dictionary<string, float> stats;
 
-    void Awake() {
-        stats.Add("health", 100f);
-        stats.Add("mana", 100f);
+    public void SetStats(Dictionary<string, float> _stats) {
+        stats = new Dictionary<string, float>(_stats);
     }
 
     public void ApplyEffect(string stat, float amount) {
         stats[stat] += amount;
+        Debug.Log(stat + ": " + stats[stat].ToString());
     }
 
     void CheckConditions() {
         
     }
-
-    // private float health = 100f;
-
-    // public float speed = 3.5f;
-
-    // public void ApplyDamage(float amount) {
-    //     health -= amount;
-    //     if (health <= 0f) {
-    //         Die();
-    //     }
-    // }
-
-    // void Die() {
-    //     Destroy(this.gameObject);
-    // }
 }

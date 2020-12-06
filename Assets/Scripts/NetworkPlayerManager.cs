@@ -63,13 +63,18 @@ public class NetworkPlayerManager : MonoBehaviour
             Vector3 position = new Vector3(playerMessage.X, playerMessage.Y, playerMessage.Z);
             GameObject obj;
 
+            // Important TODO - all players, local and network, must be in the networkPlayers dict. Need this for if server needs to send message to all entities
             if (playerMessage.ID == client.ID) {
                 obj = Instantiate(controllablePrefab, position, Quaternion.identity);
                 obj.GetComponent<NetworkMessenger>().client = client;
+                obj.GetComponent<NetworkData>().networkID = client.ID;
             } else {
                 obj = Instantiate(networkPrefab, position, Quaternion.identity);
+                obj.GetComponent<NetworkData>().networkID = playerMessage.ID;
                 networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkCharacterControl>());
             }
+
+            obj.GetComponent<CharacterStats>().SetStats(playerMessage.stats);
         }
     }   
 
@@ -135,6 +140,7 @@ public class NetworkPlayerManager : MonoBehaviour
         public float lookX {get; set;}
         public float lookY {get; set;}
         public float lookZ {get; set;}
+        public Dictionary<string, float> stats = new Dictionary<string, float>();
 
         public void Deserialize(DeserializeEvent e) {
             ID = e.Reader.ReadUInt16();
@@ -148,6 +154,12 @@ public class NetworkPlayerManager : MonoBehaviour
             lookX = e.Reader.ReadSingle();
             lookY = e.Reader.ReadSingle();
             lookZ = e.Reader.ReadSingle();
+
+            while (e.Reader.Position < e.Reader.Length) {
+                string stat = e.Reader.ReadString();
+                float value = e.Reader.ReadSingle();
+                stats.Add(stat, value);
+            }
         }
 
         public void Serialize(SerializeEvent e) {
@@ -204,6 +216,34 @@ public class NetworkPlayerManager : MonoBehaviour
         public void Serialize(SerializeEvent e) {
             e.Writer.Write(spellName);
             e.Writer.Write(command);
+        }
+    }
+
+    public class StatMessage : IDarkRiftSerializable {
+        ushort requesterID;
+        ushort receiverID;
+        string stat;
+        float amount;
+
+        public StatMessage(ushort _requesterID, ushort _receiverID, string _stat, float _amount) {
+            requesterID = _requesterID;
+            receiverID = _receiverID;
+            stat = _stat;
+            amount = _amount;
+
+            Debug.Log(requesterID);
+            Debug.Log(receiverID);
+        }
+
+        public void Deserialize(DeserializeEvent e) {
+            throw new System.NotImplementedException();
+        }
+
+        public void Serialize(SerializeEvent e) {
+            e.Writer.Write(requesterID);
+            e.Writer.Write(receiverID);
+            e.Writer.Write(stat);
+            e.Writer.Write(amount);
         }
     }
 }

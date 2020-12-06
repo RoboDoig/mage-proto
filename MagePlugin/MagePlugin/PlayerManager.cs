@@ -60,6 +60,7 @@ namespace MagePlugin
             // When this client sends a message, we should also fire the movement handler
             e.Client.MessageReceived += MovementMessageReceived;
             e.Client.MessageReceived += SpellMessageReceived;
+            e.Client.MessageReceived += StatsMessageReceived;
         }
 
         void ClientDisconnected(object sender, ClientDisconnectedEventArgs e)
@@ -75,6 +76,37 @@ namespace MagePlugin
                     foreach (IClient client in ClientManager.GetAllClients())
                     {
                         client.SendMessage(message, SendMode.Reliable);
+                    }
+                }
+            }
+        }
+
+        void StatsMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            using (Message message = e.GetMessage() as Message)
+            {
+                if (message.Tag == Tags.ApplyEffectTag)
+                {
+                    using (DarkRiftReader reader = message.GetReader())
+                    {
+                        ushort requesterID = reader.ReadUInt16();
+                        ushort receiverID = reader.ReadUInt16();
+                        string stat = reader.ReadString();
+                        float amount = reader.ReadSingle();
+
+                        Player receivingPlayer = players[ClientManager.GetClient(receiverID)];
+                        receivingPlayer.stats[stat] += amount;
+
+                        using (DarkRiftWriter writer = DarkRiftWriter.Create())
+                        {
+                            writer.Write(requesterID);
+                            writer.Write(receiverID);
+                            writer.Write(stat);
+                            writer.Write(amount);
+
+                            foreach (IClient c in ClientManager.GetAllClients())
+                                c.SendMessage(message, SendMode.Reliable);
+                        }
                     }
                 }
             }
