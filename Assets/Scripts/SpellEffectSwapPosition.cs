@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpellEffectSwapPosition : SpellEffect
 {   
-    public override bool OnEffectEnd(CharacterControl caster, Vector3 initiateTarget, Vector3 castTarget) {
+    public override bool OnEffectEnd() {
         Destroy(currentProjectile);
         currentImpactIndicator = Instantiate(impactIndicator, castTarget, Quaternion.identity);
 
