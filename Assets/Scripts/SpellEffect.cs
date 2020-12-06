@@ -65,7 +65,7 @@ public class SpellEffect : MonoBehaviour
             CharacterStats stats = hitCollider.GetComponent<CharacterStats>();
             NetworkMessenger networkMessenger = caster.GetComponent<NetworkMessenger>();
             if (stats && networkMessenger) {
-                networkMessenger.RequestStatsEffectMessage(stats.transform.GetComponent<NetworkData>().networkID, "health", -damage);
+                networkMessenger.RequestStatsEffectMessage(stats.transform.GetComponent<NetworkEntity>().networkID, "health", -damage);
             }
         }
 

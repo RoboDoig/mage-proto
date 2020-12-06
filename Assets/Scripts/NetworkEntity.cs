@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NetworkData : MonoBehaviour
+public class NetworkEntity : MonoBehaviour
 {
-    public ushort networkID {get; set;}
+    public ushort networkID;
 }

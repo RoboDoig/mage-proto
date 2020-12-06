@@ -20,7 +20,7 @@ public class NetworkPlayerManager : MonoBehaviour
     [Tooltip("The network controllable player prefab")]
     GameObject networkPrefab;
 
-    Dictionary<ushort, NetworkCharacterControl> networkPlayers = new Dictionary<ushort, NetworkCharacterControl>();
+    Dictionary<ushort, NetworkEntity> networkPlayers = new Dictionary<ushort, NetworkEntity>();
 
     void Awake() {
         if (client == null) {
@@ -51,6 +51,8 @@ public class NetworkPlayerManager : MonoBehaviour
                 MovePlayer(sender, e);
             } else if (message.Tag == Tags.SpellPlayerTag) {
                 PlayerSpell(sender, e);
+            } else if (message.Tag == Tags.ApplyEffectTag) {
+                ApplyEffect(sender, e);
             }
         }
     }
@@ -67,14 +69,14 @@ public class NetworkPlayerManager : MonoBehaviour
             if (playerMessage.ID == client.ID) {
                 obj = Instantiate(controllablePrefab, position, Quaternion.identity);
                 obj.GetComponent<NetworkMessenger>().client = client;
-                obj.GetComponent<NetworkData>().networkID = client.ID;
+                obj.GetComponent<NetworkEntity>().networkID = client.ID;
             } else {
                 obj = Instantiate(networkPrefab, position, Quaternion.identity);
-                obj.GetComponent<NetworkData>().networkID = playerMessage.ID;
-                networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkCharacterControl>());
+                obj.GetComponent<NetworkEntity>().networkID = playerMessage.ID;
             }
 
             obj.GetComponent<CharacterStats>().SetStats(playerMessage.stats);
+            networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkEntity>());
         }
     }   
 
@@ -95,10 +97,11 @@ public class NetworkPlayerManager : MonoBehaviour
                 Vector2 newAnimSpeeds = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
                 if (networkPlayers.ContainsKey(id)) {
-                    networkPlayers[id].SetPosition(newPosition);
-                    networkPlayers[id].SetRotation(newRotation);
-                    networkPlayers[id].SetLookTarget(newLookTarget);
-                    networkPlayers[id].SetAnimatorSpeeds(newAnimSpeeds);
+                    NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
+                    networkCharacterControl.SetPosition(newPosition);
+                    networkCharacterControl.SetRotation(newRotation);
+                    networkCharacterControl.SetLookTarget(newLookTarget);
+                    networkCharacterControl.SetAnimatorSpeeds(newAnimSpeeds);
                 }
             }
         }
@@ -112,18 +115,34 @@ public class NetworkPlayerManager : MonoBehaviour
                 string command = reader.ReadString();
 
                 if (networkPlayers.ContainsKey(id)) {
+                    NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
                     if (command == "spellInitiate") {
-                        networkPlayers[id].InitiateSpell(spellName);
+                        networkCharacterControl.InitiateSpell(spellName);
                     } else if (command == "spellRelease") {
-                        networkPlayers[id].ReleaseSpell();
+                        networkCharacterControl.ReleaseSpell();
                     }
                 }
             }
         }
     }
 
+    void ApplyEffect(object sender, MessageReceivedEventArgs e) {
+        using (Message message = e.GetMessage() as Message) {
+            using (DarkRiftReader reader = message.GetReader()) {
+                ushort requesterID = reader.ReadUInt16();
+                ushort receiverID = reader.ReadUInt16();
+                string stat = reader.ReadString();
+                float amount = reader.ReadSingle();
+
+                if (networkPlayers.ContainsKey(receiverID)) {
+                    networkPlayers[receiverID].GetComponent<CharacterStats>().ApplyEffect(stat, amount);
+                }
+            }
+        }
+    }
+
     void DestroyPlayer(ushort id) {
-        NetworkCharacterControl p = networkPlayers[id];
+        NetworkCharacterControl p = networkPlayers[id].GetComponent<NetworkCharacterControl>();
         Destroy(p.gameObject);
         networkPlayers.Remove(id);
     }

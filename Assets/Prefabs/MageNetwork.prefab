@@ -458,7 +458,7 @@ GameObject:
   - component: {fileID: 8589463719009012870}
   - component: {fileID: 3512619044212810740}
   - component: {fileID: -7993347580035652674}
-  - component: {fileID: -5499927950518189203}
+  - component: {fileID: 6535310841157135274}
   m_Layer: 0
   m_Name: MageNetwork
   m_TagString: Untagged
@@ -625,7 +625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 372494877ea8af54eb644ef821cfb89a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &-5499927950518189203
+--- !u!114 &6535310841157135274
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -634,9 +634,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8589771532288071569}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b87c00bcc5dcdb34582e68a553a110ef, type: 3}
+  m_Script: {fileID: 11500000, guid: 3a47da6299006ac4293580b192c36c2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkID: 0
 --- !u!1 &8589775278487683453
 GameObject:
   m_ObjectHideFlags: 0
