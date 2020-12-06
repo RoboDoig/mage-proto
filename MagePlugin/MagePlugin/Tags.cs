@@ -12,5 +12,7 @@ namespace MagePlugin
         public static readonly ushort DespawnPlayerTag = 1002;
         public static readonly ushort MovePlayerTag = 1003;
         public static readonly ushort SpellPlayerTag = 1004;
+
+        public static readonly ushort ApplyEffectTag = 2001;
     }
 }
