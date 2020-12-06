@@ -10,12 +10,12 @@ public class CharacterControl : MonoBehaviour
 {
     public bool controllabe;
     public float rotationSpeed;
-    public UnityClient client;
 
     // Components cache
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     private SpellCasting spellCasting;
+    private NetworkMessenger networkMessenger;
     private SpellEffectManager spellEffectManager;
 
     // Speed/Movement calculation
@@ -37,6 +37,7 @@ public class CharacterControl : MonoBehaviour
         spellCasting = GetComponent<SpellCasting>();
         spellEffectManager = Camera.main.GetComponent<SpellEffectManager>();
         spellCasting.SelectSpellEffect(spellEffectManager.spellEffects[0]);
+        networkMessenger = GetComponent<NetworkMessenger>();
 
         lastPosition = transform.position;
         currentMoveTarget = transform.position;
@@ -54,10 +55,8 @@ public class CharacterControl : MonoBehaviour
     }
 
     void UpdateNetwork() {
-        Message moveMessage = Message.Create(Tags.MovePlayerTag,
-            new NetworkPlayerManager.MovementMessage(transform.position, transform.rotation, currentLookTarget, animSpeed));
-
-        client.SendMessage(moveMessage, SendMode.Unreliable);
+        networkMessenger.SendPlayerMoveMessage(transform.position, transform.rotation,
+            currentLookTarget, animSpeed);
     }
 
     public void LookAtTarget(Vector3 position) {
@@ -85,10 +84,7 @@ public class CharacterControl : MonoBehaviour
 
             spellCasting.InitiateSpell(currentLookTarget);
 
-            Message spellMessage = Message.Create(Tags.SpellPlayerTag,
-                new NetworkPlayerManager.SpellMessage(spellCasting.currentEffect.effectName, "spellInitiate"));
-
-            client.SendMessage(spellMessage, SendMode.Reliable);
+            networkMessenger.SendSpellMessage(spellCasting.currentEffect.effectName, "spellInitiate");
         }
     }
 
@@ -97,10 +93,7 @@ public class CharacterControl : MonoBehaviour
             animator.SetTrigger("spellRelease");
             canRelease = false;
 
-            Message spellMessage = Message.Create(Tags.SpellPlayerTag,
-                new NetworkPlayerManager.SpellMessage(spellCasting.currentEffect.effectName, "spellRelease"));
-
-            client.SendMessage(spellMessage, SendMode.Reliable);
+            networkMessenger.SendSpellMessage(spellCasting.currentEffect.effectName, "spellRelease");
         }
     }
 

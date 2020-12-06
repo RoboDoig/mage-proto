@@ -61,7 +61,7 @@ public class PlayerInterface : MonoBehaviour
                     targetCharacter.GoToTarget(hit.point);
                 }
 
-                if (Input.GetMouseButtonDown(1)) {
+                if (Input.GetMouseButton(1)) {
                     targetCharacter.InitiateSpell();
                 }
 
