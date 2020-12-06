@@ -59,12 +59,13 @@ public class SpellEffect : MonoBehaviour
         Destroy(currentProjectile);
         currentImpactIndicator = Instantiate(impactIndicator, castTarget, Quaternion.identity);
 
-        // Deal damage
+        // Deal damage - TODO, lots of get component stuff here, can it be simplified? Mainly to do with getting network IDs
         Collider[] hitColliders = Physics.OverlapSphere(castTarget, areaOfEffect);
         foreach (Collider hitCollider in hitColliders) {
             CharacterStats stats = hitCollider.GetComponent<CharacterStats>();
-            if (stats) {
-                stats.ApplyEffect("health", damage);
+            NetworkMessenger networkMessenger = caster.GetComponent<NetworkMessenger>();
+            if (stats && networkMessenger) {
+                networkMessenger.RequestStatsEffectMessage(stats.transform.GetComponent<NetworkEntity>().networkID, "health", -damage);
             }
         }
 

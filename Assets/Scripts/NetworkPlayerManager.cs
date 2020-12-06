@@ -20,7 +20,7 @@ public class NetworkPlayerManager : MonoBehaviour
     [Tooltip("The network controllable player prefab")]
     GameObject networkPrefab;
 
-    Dictionary<ushort, NetworkCharacterControl> networkPlayers = new Dictionary<ushort, NetworkCharacterControl>();
+    Dictionary<ushort, NetworkEntity> networkPlayers = new Dictionary<ushort, NetworkEntity>();
 
     void Awake() {
         if (client == null) {
@@ -51,6 +51,8 @@ public class NetworkPlayerManager : MonoBehaviour
                 MovePlayer(sender, e);
             } else if (message.Tag == Tags.SpellPlayerTag) {
                 PlayerSpell(sender, e);
+            } else if (message.Tag == Tags.ApplyEffectTag) {
+                ApplyEffect(sender, e);
             }
         }
     }
@@ -63,13 +65,18 @@ public class NetworkPlayerManager : MonoBehaviour
             Vector3 position = new Vector3(playerMessage.X, playerMessage.Y, playerMessage.Z);
             GameObject obj;
 
+            // Important TODO - all players, local and network, must be in the networkPlayers dict. Need this for if server needs to send message to all entities
             if (playerMessage.ID == client.ID) {
                 obj = Instantiate(controllablePrefab, position, Quaternion.identity);
                 obj.GetComponent<NetworkMessenger>().client = client;
+                obj.GetComponent<NetworkEntity>().networkID = client.ID;
             } else {
                 obj = Instantiate(networkPrefab, position, Quaternion.identity);
-                networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkCharacterControl>());
+                obj.GetComponent<NetworkEntity>().networkID = playerMessage.ID;
             }
+
+            obj.GetComponent<CharacterStats>().SetStats(playerMessage.stats);
+            networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkEntity>());
         }
     }   
 
@@ -90,10 +97,11 @@ public class NetworkPlayerManager : MonoBehaviour
                 Vector2 newAnimSpeeds = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
                 if (networkPlayers.ContainsKey(id)) {
-                    networkPlayers[id].SetPosition(newPosition);
-                    networkPlayers[id].SetRotation(newRotation);
-                    networkPlayers[id].SetLookTarget(newLookTarget);
-                    networkPlayers[id].SetAnimatorSpeeds(newAnimSpeeds);
+                    NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
+                    networkCharacterControl.SetPosition(newPosition);
+                    networkCharacterControl.SetRotation(newRotation);
+                    networkCharacterControl.SetLookTarget(newLookTarget);
+                    networkCharacterControl.SetAnimatorSpeeds(newAnimSpeeds);
                 }
             }
         }
@@ -107,18 +115,34 @@ public class NetworkPlayerManager : MonoBehaviour
                 string command = reader.ReadString();
 
                 if (networkPlayers.ContainsKey(id)) {
+                    NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
                     if (command == "spellInitiate") {
-                        networkPlayers[id].InitiateSpell(spellName);
+                        networkCharacterControl.InitiateSpell(spellName);
                     } else if (command == "spellRelease") {
-                        networkPlayers[id].ReleaseSpell();
+                        networkCharacterControl.ReleaseSpell();
                     }
                 }
             }
         }
     }
 
+    void ApplyEffect(object sender, MessageReceivedEventArgs e) {
+        using (Message message = e.GetMessage() as Message) {
+            using (DarkRiftReader reader = message.GetReader()) {
+                ushort requesterID = reader.ReadUInt16();
+                ushort receiverID = reader.ReadUInt16();
+                string stat = reader.ReadString();
+                float amount = reader.ReadSingle();
+
+                if (networkPlayers.ContainsKey(receiverID)) {
+                    networkPlayers[receiverID].GetComponent<CharacterStats>().ApplyEffect(stat, amount);
+                }
+            }
+        }
+    }
+
     void DestroyPlayer(ushort id) {
-        NetworkCharacterControl p = networkPlayers[id];
+        NetworkCharacterControl p = networkPlayers[id].GetComponent<NetworkCharacterControl>();
         Destroy(p.gameObject);
         networkPlayers.Remove(id);
     }
@@ -135,6 +159,7 @@ public class NetworkPlayerManager : MonoBehaviour
         public float lookX {get; set;}
         public float lookY {get; set;}
         public float lookZ {get; set;}
+        public Dictionary<string, float> stats = new Dictionary<string, float>();
 
         public void Deserialize(DeserializeEvent e) {
             ID = e.Reader.ReadUInt16();
@@ -148,6 +173,12 @@ public class NetworkPlayerManager : MonoBehaviour
             lookX = e.Reader.ReadSingle();
             lookY = e.Reader.ReadSingle();
             lookZ = e.Reader.ReadSingle();
+
+            while (e.Reader.Position < e.Reader.Length) {
+                string stat = e.Reader.ReadString();
+                float value = e.Reader.ReadSingle();
+                stats.Add(stat, value);
+            }
         }
 
         public void Serialize(SerializeEvent e) {
@@ -204,6 +235,34 @@ public class NetworkPlayerManager : MonoBehaviour
         public void Serialize(SerializeEvent e) {
             e.Writer.Write(spellName);
             e.Writer.Write(command);
+        }
+    }
+
+    public class StatMessage : IDarkRiftSerializable {
+        ushort requesterID;
+        ushort receiverID;
+        string stat;
+        float amount;
+
+        public StatMessage(ushort _requesterID, ushort _receiverID, string _stat, float _amount) {
+            requesterID = _requesterID;
+            receiverID = _receiverID;
+            stat = _stat;
+            amount = _amount;
+
+            Debug.Log(requesterID);
+            Debug.Log(receiverID);
+        }
+
+        public void Deserialize(DeserializeEvent e) {
+            throw new System.NotImplementedException();
+        }
+
+        public void Serialize(SerializeEvent e) {
+            e.Writer.Write(requesterID);
+            e.Writer.Write(receiverID);
+            e.Writer.Write(stat);
+            e.Writer.Write(amount);
         }
     }
 }

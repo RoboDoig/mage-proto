@@ -6,6 +6,7 @@ public class NetworkCharacterControl : MonoBehaviour
 {
     private Animator animator;
     private SpellCasting spellCasting;
+    private NetworkMessenger networkMessenger;
     private SpellEffectManager spellEffectManager;
     private Vector3 currentLookTarget;
     private Vector2 animSpeed;

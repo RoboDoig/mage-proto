@@ -20,10 +20,13 @@ public class NetworkMessenger : MonoBehaviour
         Message spellMessage = Message.Create(Tags.SpellPlayerTag,
             new NetworkPlayerManager.SpellMessage(spellName, command));
 
-        client.SendMessage(spellMessage, SendMode.Unreliable);
+        client.SendMessage(spellMessage, SendMode.Reliable);
     }
 
-    public void RequestStatsEffectMessage(string stat, float amount) {
+    public void RequestStatsEffectMessage(ushort receiverID, string stat, float amount) {
+        Message statMessage = Message.Create(Tags.ApplyEffectTag,
+            new NetworkPlayerManager.StatMessage(client.ID, receiverID, stat, amount));
 
+        client.SendMessage(statMessage, SendMode.Reliable);
     }
 }
