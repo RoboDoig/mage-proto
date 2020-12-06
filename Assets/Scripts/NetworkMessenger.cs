@@ -10,10 +10,16 @@ public class NetworkMessenger : MonoBehaviour
     public UnityClient client;
 
     public void SendPlayerMoveMessage(Vector3 position, Quaternion rotation, Vector3 currentLookTarget, Vector2 animSpeeds) {
-        Message moveMessage = Message.Create(Tags.MovePlayerTag,
-            new NetworkPlayerManager.MovementMessage(position, rotation, currentLookTarget, animSpeeds));
+        using (DarkRiftWriter moveMessageWriter = DarkRiftWriter.Create()) {
+            moveMessageWriter.Write(new NetworkPlayerManager.MovementMessage(position, rotation, currentLookTarget, animSpeeds));
+            using (Message moveMessage = Message.Create(Tags.MovePlayerTag, moveMessageWriter)) {
+                client.SendMessage(moveMessage, SendMode.Reliable);
+            }
+        }
+        // Message moveMessage = Message.Create(Tags.MovePlayerTag,
+        //     new NetworkPlayerManager.MovementMessage(position, rotation, currentLookTarget, animSpeeds));
 
-        client.SendMessage(moveMessage, SendMode.Unreliable);
+        // client.SendMessage(moveMessage, SendMode.Unreliable);
     }
 
     public void SendSpellMessage(string spellName, string command) {

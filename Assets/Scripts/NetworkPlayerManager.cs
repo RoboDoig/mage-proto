@@ -90,11 +90,19 @@ public class NetworkPlayerManager : MonoBehaviour
     void MovePlayer(object sender, MessageReceivedEventArgs e) {
         using (Message message = e.GetMessage() as Message) {
             using (DarkRiftReader reader = message.GetReader()) {
-                ushort id = reader.ReadUInt16();
-                Vector3 newPosition = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                Quaternion newRotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                Vector3 newLookTarget = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                Vector2 newAnimSpeeds = new Vector2(reader.ReadSingle(), reader.ReadSingle());
+                MovementMessage moveMessage = reader.ReadSerializable<MovementMessage>();
+
+                ushort id = moveMessage.ID;
+                Vector3 newPosition = moveMessage.position;
+                Quaternion newRotation = moveMessage.rotation;
+                Vector3 newLookTarget = moveMessage.lookTarget;
+                Vector2 newAnimSpeeds = moveMessage.animSpeeds;
+
+                // ushort id = reader.ReadUInt16();
+                // Vector3 newPosition = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                // Quaternion newRotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                // Vector3 newLookTarget = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+                // Vector2 newAnimSpeeds = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
                 if (networkPlayers.ContainsKey(id)) {
                     NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
@@ -187,10 +195,15 @@ public class NetworkPlayerManager : MonoBehaviour
     }
 
     public class MovementMessage : IDarkRiftSerializable {
-        Vector3 position;
-        Quaternion rotation;
-        Vector3 lookTarget;
-        Vector2 animSpeeds;
+        public ushort ID {get; set;}
+        public Vector3 position {get; set;}
+        public Quaternion rotation {get; set;}
+        public Vector3 lookTarget {get; set;}
+        public Vector2 animSpeeds {get; set;}
+
+        public MovementMessage() {
+
+        }
 
         public MovementMessage(Vector3 _position, Quaternion _rotation, Vector3 _lookTarget, Vector2 _animSpeeds) {
             position = _position;
@@ -200,7 +213,11 @@ public class NetworkPlayerManager : MonoBehaviour
         }
 
         public void Deserialize(DeserializeEvent e) {
-            throw new System.NotImplementedException();
+            ID = e.Reader.ReadUInt16();
+            position = new Vector3(e.Reader.ReadSingle(), e.Reader.ReadSingle(), e.Reader.ReadSingle());
+            rotation = new Quaternion(e.Reader.ReadSingle(), e.Reader.ReadSingle(), e.Reader.ReadSingle(), e.Reader.ReadSingle());
+            lookTarget = new Vector3(e.Reader.ReadSingle(), e.Reader.ReadSingle(), e.Reader.ReadSingle());
+            animSpeeds = new Vector2(e.Reader.ReadSingle(), e.Reader.ReadSingle());
         }
 
         public void Serialize(SerializeEvent e) {
