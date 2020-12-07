@@ -8,6 +8,7 @@ public class SpellEffect : MonoBehaviour
     public Sprite icon;
     public float damage;
     public float areaOfEffect;
+    public float projectileSpeed;
 
     public GameObject projectile;
     public GameObject initiateIndicator;
@@ -48,7 +49,7 @@ public class SpellEffect : MonoBehaviour
 
     protected virtual void Update() {
         if (currentProjectile != null) {
-            currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, castTarget, 20f * Time.deltaTime);
+            currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, castTarget, projectileSpeed * Time.deltaTime);
             if ((currentProjectile.transform.position - castTarget).magnitude < 0.1f) {
                 OnEffectEnd();
             }

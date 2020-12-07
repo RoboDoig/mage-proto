@@ -34,21 +34,19 @@ public class PlayerInterface : MonoBehaviour
     {
         if (targetCharacter != null) {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                int selectionIndex = 0;
-                uiManager.SelectEffect(selectionIndex);
-                characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
+                SelectEffect(0);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                int selectionIndex = 1;
-                uiManager.SelectEffect(selectionIndex);
-                characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
+                SelectEffect(1);
             }
 
             if (Input.GetKeyDown(KeyCode.Alpha3)) {
-                int selectionIndex = 2;
-                uiManager.SelectEffect(selectionIndex);
-                characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
+                SelectEffect(2);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                SelectEffect(3);
             }
 
 
@@ -61,7 +59,7 @@ public class PlayerInterface : MonoBehaviour
                     targetCharacter.GoToTarget(hit.point);
                 }
 
-                if (Input.GetMouseButton(1)) {
+                if (Input.GetMouseButtonDown(1)) {
                     targetCharacter.InitiateSpell();
                 }
 
@@ -74,5 +72,10 @@ public class PlayerInterface : MonoBehaviour
             Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, lookRotation, Time.deltaTime);
             Camera.main.transform.position = Vector3.Slerp(Camera.main.transform.position, targetCharacter.transform.position + new Vector3(xOffset, yOffset, zOffset), Time.deltaTime);
         }
+    }
+
+    void SelectEffect(int selectionIndex) {
+        uiManager.SelectEffect(selectionIndex);
+        characterSpellCasting.SelectSpellEffect(spellEffectManager.spellEffects[selectionIndex]);
     }
 }

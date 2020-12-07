@@ -37,6 +37,8 @@ public class SpellEffectSwapPosition : SpellEffect
         }
 
         Destroy(currentImpactIndicator, 1f);
+        Destroy(this.gameObject);
+        
         return true;
     }
 }
