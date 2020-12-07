@@ -130,17 +130,13 @@ public class NetworkPlayerManager : MonoBehaviour
         }
     }
 
-    // TODO structure like others
     void ApplyEffect(object sender, MessageReceivedEventArgs e) {
         using (Message message = e.GetMessage() as Message) {
             using (DarkRiftReader reader = message.GetReader()) {
-                ushort requesterID = reader.ReadUInt16();
-                ushort receiverID = reader.ReadUInt16();
-                string stat = reader.ReadString();
-                float amount = reader.ReadSingle();
+                StatMessage statMessage = reader.ReadSerializable<StatMessage>();
 
-                if (networkPlayers.ContainsKey(receiverID)) {
-                    networkPlayers[receiverID].GetComponent<CharacterStats>().ApplyEffect(stat, amount);
+                if (networkPlayers.ContainsKey(statMessage.receiverID)) {
+                    networkPlayers[statMessage.receiverID].GetComponent<CharacterStats>().ApplyEffect(statMessage.stat, statMessage.amount);
                 }
             }
         }
@@ -260,10 +256,10 @@ public class NetworkPlayerManager : MonoBehaviour
     }
 
     public class StatMessage : IDarkRiftSerializable {
-        ushort requesterID;
-        ushort receiverID;
-        string stat;
-        float amount;
+        public ushort requesterID {get; set;}
+        public ushort receiverID {get; set;}
+        public string stat {get; set;}
+        public float amount {get; set;}
 
         public StatMessage() {
 
