@@ -20,6 +20,9 @@ public class NetworkPlayerManager : MonoBehaviour
     [Tooltip("The network controllable player prefab")]
     GameObject networkPrefab;
 
+    // UI
+    public UINetworkMessage uiNetworkMessage;
+
     Dictionary<ushort, NetworkEntity> networkPlayers = new Dictionary<ushort, NetworkEntity>();
 
     void Awake() {
@@ -39,20 +42,25 @@ public class NetworkPlayerManager : MonoBehaviour
         }
 
         client.MessageReceived += MessageReceived;
+
+        uiNetworkMessage.AddMessage("Connected to Network");
     }
 
     void MessageReceived(object sender, MessageReceivedEventArgs e) {
         using (Message message = e.GetMessage() as Message) {
             if (message.Tag == Tags.SpawnPlayerTag) {
                 SpawnPlayer(sender, e);
+                uiNetworkMessage.AddMessage("Player Spawned");
             } else if (message.Tag == Tags.DespawnPlayerTag) {
                 DespawnPlayer(sender, e);
+                uiNetworkMessage.AddMessage("Player Despawned");
             } else if (message.Tag == Tags.MovePlayerTag) {
                 MovePlayer(sender, e);
             } else if (message.Tag == Tags.SpellPlayerTag) {
                 PlayerSpell(sender, e);
             } else if (message.Tag == Tags.ApplyEffectTag) {
                 ApplyEffect(sender, e);
+                uiNetworkMessage.AddMessage("Add Effect");
             }
         }
     }
@@ -92,24 +100,12 @@ public class NetworkPlayerManager : MonoBehaviour
             using (DarkRiftReader reader = message.GetReader()) {
                 MovementMessage moveMessage = reader.ReadSerializable<MovementMessage>();
 
-                ushort id = moveMessage.ID;
-                Vector3 newPosition = moveMessage.position;
-                Quaternion newRotation = moveMessage.rotation;
-                Vector3 newLookTarget = moveMessage.lookTarget;
-                Vector2 newAnimSpeeds = moveMessage.animSpeeds;
-
-                // ushort id = reader.ReadUInt16();
-                // Vector3 newPosition = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                // Quaternion newRotation = new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                // Vector3 newLookTarget = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
-                // Vector2 newAnimSpeeds = new Vector2(reader.ReadSingle(), reader.ReadSingle());
-
-                if (networkPlayers.ContainsKey(id)) {
-                    NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
-                    networkCharacterControl.SetPosition(newPosition);
-                    networkCharacterControl.SetRotation(newRotation);
-                    networkCharacterControl.SetLookTarget(newLookTarget);
-                    networkCharacterControl.SetAnimatorSpeeds(newAnimSpeeds);
+                if (networkPlayers.ContainsKey(moveMessage.ID)) {
+                    NetworkCharacterControl networkCharacterControl = networkPlayers[moveMessage.ID].GetComponent<NetworkCharacterControl>();
+                    networkCharacterControl.SetPosition(moveMessage.position);
+                    networkCharacterControl.SetRotation(moveMessage.rotation);
+                    networkCharacterControl.SetLookTarget(moveMessage.lookTarget);
+                    networkCharacterControl.SetAnimatorSpeeds(moveMessage.animSpeeds);
                 }
             }
         }
@@ -118,15 +114,15 @@ public class NetworkPlayerManager : MonoBehaviour
     void PlayerSpell(object sender, MessageReceivedEventArgs e) {
         using (Message message= e.GetMessage() as Message) {
             using (DarkRiftReader reader = message.GetReader()) {
-                ushort id = reader.ReadUInt16();
-                string spellName = reader.ReadString();
-                string command = reader.ReadString();
+                SpellMessage spellMessage = reader.ReadSerializable<SpellMessage>();
 
-                if (networkPlayers.ContainsKey(id)) {
-                    NetworkCharacterControl networkCharacterControl = networkPlayers[id].GetComponent<NetworkCharacterControl>();
-                    if (command == "spellInitiate") {
-                        networkCharacterControl.InitiateSpell(spellName);
-                    } else if (command == "spellRelease") {
+                if (networkPlayers.ContainsKey(spellMessage.ID)) {
+                    NetworkCharacterControl networkCharacterControl = networkPlayers[spellMessage.ID].GetComponent<NetworkCharacterControl>();
+                    if (spellMessage.command == "spellInitiate") {
+                        uiNetworkMessage.AddMessage("Spell Initiate");
+                        networkCharacterControl.InitiateSpell(spellMessage.spellName);
+                    } else if (spellMessage.command == "spellRelease") {
+                        uiNetworkMessage.AddMessage("Spell Release");
                         networkCharacterControl.ReleaseSpell();
                     }
                 }
@@ -134,6 +130,7 @@ public class NetworkPlayerManager : MonoBehaviour
         }
     }
 
+    // TODO structure like others
     void ApplyEffect(object sender, MessageReceivedEventArgs e) {
         using (Message message = e.GetMessage() as Message) {
             using (DarkRiftReader reader = message.GetReader()) {
@@ -237,8 +234,13 @@ public class NetworkPlayerManager : MonoBehaviour
     }
 
     public class SpellMessage : IDarkRiftSerializable {
-        string spellName;
-        string command;
+        public ushort ID {get; set;}
+        public string spellName {get; set;}
+        public string command {get; set;}
+
+        public SpellMessage() {
+
+        }
 
         public SpellMessage(string _spellName, string _command) {
             spellName = _spellName;
@@ -246,7 +248,9 @@ public class NetworkPlayerManager : MonoBehaviour
         }
 
         public void Deserialize(DeserializeEvent e) {
-            throw new System.NotImplementedException();
+            ID = e.Reader.ReadUInt16();
+            spellName = e.Reader.ReadString();
+            command = e.Reader.ReadString();
         }
 
         public void Serialize(SerializeEvent e) {
@@ -261,18 +265,22 @@ public class NetworkPlayerManager : MonoBehaviour
         string stat;
         float amount;
 
+        public StatMessage() {
+
+        }
+
         public StatMessage(ushort _requesterID, ushort _receiverID, string _stat, float _amount) {
             requesterID = _requesterID;
             receiverID = _receiverID;
             stat = _stat;
             amount = _amount;
-
-            Debug.Log(requesterID);
-            Debug.Log(receiverID);
         }
 
         public void Deserialize(DeserializeEvent e) {
-            throw new System.NotImplementedException();
+            requesterID = e.Reader.ReadUInt16();
+            receiverID = e.Reader.ReadUInt16();
+            stat = e.Reader.ReadString();
+            amount = e.Reader.ReadSingle();
         }
 
         public void Serialize(SerializeEvent e) {

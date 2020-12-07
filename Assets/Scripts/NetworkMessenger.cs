@@ -16,23 +16,23 @@ public class NetworkMessenger : MonoBehaviour
                 client.SendMessage(moveMessage, SendMode.Reliable);
             }
         }
-        // Message moveMessage = Message.Create(Tags.MovePlayerTag,
-        //     new NetworkPlayerManager.MovementMessage(position, rotation, currentLookTarget, animSpeeds));
-
-        // client.SendMessage(moveMessage, SendMode.Unreliable);
     }
 
     public void SendSpellMessage(string spellName, string command) {
-        Message spellMessage = Message.Create(Tags.SpellPlayerTag,
-            new NetworkPlayerManager.SpellMessage(spellName, command));
-
-        client.SendMessage(spellMessage, SendMode.Reliable);
+        using (DarkRiftWriter spellMessageWriter = DarkRiftWriter.Create()) {
+            spellMessageWriter.Write(new NetworkPlayerManager.SpellMessage(spellName, command));
+            using (Message spellMessage = Message.Create(Tags.SpellPlayerTag, spellMessageWriter)) {
+                client.SendMessage(spellMessage, SendMode.Reliable);
+            }
+        }
     }
 
     public void RequestStatsEffectMessage(ushort receiverID, string stat, float amount) {
-        Message statMessage = Message.Create(Tags.ApplyEffectTag,
-            new NetworkPlayerManager.StatMessage(client.ID, receiverID, stat, amount));
-
-        client.SendMessage(statMessage, SendMode.Reliable);
+        using (DarkRiftWriter statsMessageWriter = DarkRiftWriter.Create()) {
+            statsMessageWriter.Write(new NetworkPlayerManager.StatMessage(client.ID, receiverID, stat, amount));
+            using (Message statsMessage = Message.Create(Tags.ApplyEffectTag, statsMessageWriter)) {
+                client.SendMessage(statsMessage, SendMode.Reliable);
+            }
+        }
     }
 }
