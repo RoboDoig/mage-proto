@@ -76,7 +76,7 @@ public class CharacterControl : MonoBehaviour
     }
 
     public void InitiateSpell() {
-        if (!inSpellCast) {
+        if (!inSpellCast && spellCasting.CanCast()) {
             animator.SetLayerWeight(1, 1f);
             animator.SetTrigger("spellInitiate");
             inSpellCast = true;

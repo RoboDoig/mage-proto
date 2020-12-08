@@ -49,4 +49,11 @@ public class SpellCasting : MonoBehaviour
     void DefaultUpdate() {
 
     }
+
+    public bool CanCast() {
+        if (characterStats.stats["mana"] < currentEffect.manaCost) {
+            return false;
+        }
+        return true;
+    }
 }

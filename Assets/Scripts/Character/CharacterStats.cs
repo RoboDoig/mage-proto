@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CharacterStats : MonoBehaviour
 {
-    private Dictionary<string, float> stats;
+    public Dictionary<string, float> stats {get; private set;}
     private UIPlayerCanvas uIPlayerCanvas;
 
     void Start() {
@@ -17,7 +17,6 @@ public class CharacterStats : MonoBehaviour
 
     public void ApplyEffect(string stat, float amount) {
         stats[stat] += amount;
-        Debug.Log(stat + ": " + stats[stat].ToString());
 
         uIPlayerCanvas.SetHealth(stats["health"]);
         uIPlayerCanvas.SetMana(stats["mana"]);
