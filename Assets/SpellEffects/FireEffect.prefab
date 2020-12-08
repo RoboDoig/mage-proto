@@ -46,6 +46,7 @@ MonoBehaviour:
   effectName: Fire
   icon: {fileID: 21300000, guid: 6b4f738c5f131de4ea039274935bed7d, type: 3}
   damage: 10
+  manaCost: 10
   areaOfEffect: 2
   projectileSpeed: 20
   projectile: {fileID: 1722081097931586, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class SpellCasting : MonoBehaviour
 {
+    private CharacterStats characterStats;
+    private NetworkMessenger networkMessenger;
     public SpellEffect currentEffect {get; private set;}
-    // private SpellEffect nextEffect;
     private SpellEffect spellEffectInstance;
     public Transform wandCastTransform;
     public delegate void UpdateAction();
@@ -16,6 +17,8 @@ public class SpellCasting : MonoBehaviour
 
     void Start() {
         updateAction = DefaultUpdate;
+        characterStats = GetComponent<CharacterStats>();
+        networkMessenger = GetComponent<NetworkMessenger>();
     }
 
     public void SelectSpellEffect(SpellEffect spellEffect) {
@@ -34,6 +37,9 @@ public class SpellCasting : MonoBehaviour
         castTarget = _castTarget;
 
         spellEffectInstance.OnRelease(this, initiateTarget, castTarget, wandCastTransform);
+
+        if (networkMessenger)
+            networkMessenger.RequestStatsEffectMessage(networkMessenger.client.ID, "mana", -spellEffectInstance.manaCost);
     }
 
     void Update() {

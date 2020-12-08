@@ -46,6 +46,7 @@ MonoBehaviour:
   effectName: Ice
   icon: {fileID: 21300000, guid: 4a26957329d698d49b8b7e2b07e31b27, type: 3}
   damage: 10
+  manaCost: 10
   areaOfEffect: 2
   projectileSpeed: 20
   projectile: {fileID: 1747586400421602, guid: 27a7f93524a582440b2e162bf001be78, type: 3}

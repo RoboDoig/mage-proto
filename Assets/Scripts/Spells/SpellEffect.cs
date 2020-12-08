@@ -7,6 +7,7 @@ public class SpellEffect : MonoBehaviour
     public string effectName;
     public Sprite icon;
     public float damage;
+    public float manaCost;
     public float areaOfEffect;
     public float projectileSpeed;
 
