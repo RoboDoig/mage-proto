@@ -4,5 +4,11 @@ using UnityEngine;
 
 public class SpawnLocation : MonoBehaviour
 {
-    public int team;
+    public static List<SpawnLocation> spawnLocations = new List<SpawnLocation>();
+
+    public ushort team;
+
+    void Awake() {
+        spawnLocations.Add(this);
+    }
 }

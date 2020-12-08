@@ -73,7 +73,6 @@ public class NetworkPlayerManager : MonoBehaviour
             Vector3 position = new Vector3(playerMessage.X, playerMessage.Y, playerMessage.Z);
             GameObject obj;
 
-            // Important TODO - all players, local and network, must be in the networkPlayers dict. Need this for if server needs to send message to all entities
             if (playerMessage.ID == client.ID) {
                 obj = Instantiate(controllablePrefab, position, Quaternion.identity);
                 obj.GetComponent<NetworkMessenger>().client = client;
@@ -85,6 +84,13 @@ public class NetworkPlayerManager : MonoBehaviour
 
             obj.GetComponent<CharacterStats>().SetStats(playerMessage.stats);
             networkPlayers.Add(playerMessage.ID, obj.GetComponent<NetworkEntity>());
+
+            // Spawn player at appropriate spawn point
+            foreach (SpawnLocation spawnLocation in SpawnLocation.spawnLocations) {
+                if (spawnLocation.team == playerMessage.teamID) {
+                    obj.transform.position = spawnLocation.transform.position;
+                }
+            }
         }
     }   
 
@@ -150,6 +156,7 @@ public class NetworkPlayerManager : MonoBehaviour
 
     public class PlayerMessage : IDarkRiftSerializable {
         public ushort ID;
+        public ushort teamID;
         public float X {get; set;}
         public float Y {get; set;}
         public float Z {get; set;}
@@ -164,6 +171,7 @@ public class NetworkPlayerManager : MonoBehaviour
 
         public void Deserialize(DeserializeEvent e) {
             ID = e.Reader.ReadUInt16();
+            teamID = e.Reader.ReadUInt16();
             X = e.Reader.ReadSingle();
             Y = e.Reader.ReadSingle();
             Z = e.Reader.ReadSingle();

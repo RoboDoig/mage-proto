@@ -17,6 +17,8 @@ namespace MagePlugin
 
         Dictionary<IClient, Player> players = new Dictionary<IClient, Player>();
 
+        public ushort teamCounter = 0;
+
         public PlayerManager(PluginLoadData pluginLoadData) : base(pluginLoadData)
         {
             ClientManager.ClientConnected += ClientConnected;
@@ -28,10 +30,20 @@ namespace MagePlugin
             // When client connects, generate new player data
             Player newPlayer = new Player(
                 e.Client.ID,
+                teamCounter,
                 0f,
                 0.5f,
                 0f
             );
+
+            // for now, we just alternate teams between 0 and 1 every time a new player joins
+            if (teamCounter == 0)
+            {
+                teamCounter = 1;
+            } else
+            {
+                teamCounter = 0;
+            }
 
             // Write player data and tell other connected clients about this client player
             using (DarkRiftWriter newPlayerWriter = DarkRiftWriter.Create())

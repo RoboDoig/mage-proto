@@ -11,6 +11,7 @@ namespace MagePlugin
     class Player : IDarkRiftSerializable
     {
         public ushort ID { get; set; }
+        public ushort teamID { get; set; }
 
         public float X { get; set; }
         public float Y { get; set; }
@@ -27,9 +28,10 @@ namespace MagePlugin
 
         public Dictionary<string, float> stats;
 
-        public Player(ushort id, float x, float y, float z)
+        public Player(ushort id, ushort team, float x, float y, float z)
         {
             ID = id;
+            teamID = team;
             X = x;
             Y = y;
             Z = z;
@@ -51,6 +53,7 @@ namespace MagePlugin
         public void Deserialize(DeserializeEvent e)
         {
             ID = e.Reader.ReadUInt16();
+            teamID = e.Reader.ReadUInt16();
 
             X = e.Reader.ReadSingle();
             Y = e.Reader.ReadSingle();
@@ -69,6 +72,7 @@ namespace MagePlugin
         public void Serialize(SerializeEvent e)
         {
             e.Writer.Write(ID);
+            e.Writer.Write(teamID);
 
             e.Writer.Write(X);
             e.Writer.Write(Y);
